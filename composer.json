@@ -15,6 +15,7 @@
         "spiffy/spiffy-inject": "~1.0-dev",
         "spiffy/spiffy-package": "~1.0-dev",
         "spiffy/spiffy-route": "~1.0-dev",
+        "spiffy/spiffy-view": "~1.0-dev",
         "spiffy/spiffy-view-twig": "~1.0-dev",
 
         "symfony/console": "~2.4",
