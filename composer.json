@@ -1,0 +1,32 @@
+{
+    "name": "spiffy/spiffy-framework",
+    "authors": [
+        {
+            "name": "Kyle Spraggs",
+            "email": "theman@spiffyjr.me"
+        }
+    ],
+    "description": "Spiffy\\Framework is a full-stack framework for PHP built from light weight components and 100% HHVM compatible.",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=5.4",
+        "twig/twig": "~1.15"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "squizlabs/php_codesniffer": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spiffy\\Framework\\": [
+                "src/",
+                "test/"
+            ]
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "1.0-dev"
+        }
+    }
+}
