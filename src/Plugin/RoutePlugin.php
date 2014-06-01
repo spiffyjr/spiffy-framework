@@ -6,7 +6,6 @@ use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Spiffy\Framework\ApplicationPackage;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoutePlugin implements Plugin
@@ -76,8 +75,13 @@ class RoutePlugin implements Plugin
      */
     final public function route404(ApplicationEvent $e)
     {
-        $app = $e->getApplication();
-        $response = $app->getResponse();
+        $response = $e->getResponse();
+
+        if (!$response) {
+            $response = new Response();
+            $e->setResponse($response);
+        }
+
         $response->setStatusCode(Response::HTTP_NOT_FOUND);
     }
 }
