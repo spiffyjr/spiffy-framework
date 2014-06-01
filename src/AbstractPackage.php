@@ -2,6 +2,9 @@
 
 namespace Spiffy\Framework;
 
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Finder\Finder;
+
 abstract class AbstractPackage implements ApplicationPackage
 {
     /**
@@ -24,6 +27,46 @@ abstract class AbstractPackage implements ApplicationPackage
      */
     public function bootstrap(Application $app)
     {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function bootstrapConsole(ConsoleApplication $console)
+    {
+        $consoleDir = realpath($this->getPath() . '/Console');
+        if (!$consoleDir) {
+            return;
+        }
+
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->ignoreUnreadableDirs()
+            ->name('*Command.php')
+            ->in($consoleDir);
+
+        foreach ($finder as $file) {
+            $classes = get_declared_classes();
+            include_once $file;
+            $newClasses = get_declared_classes();
+
+            foreach (array_diff($newClasses, $classes) as $className) {
+                if ($className == 'Spiffy\Mvc\ConsoleCommand') {
+                    continue;
+                }
+
+                $refl = new \ReflectionClass($className);
+                if ($refl->isAbstract()) {
+                    continue;
+                }
+                $command = $refl->newInstance();
+                if (!$command instanceof Command) {
+                    continue;
+                }
+                $console->add(new $command);
+            }
+        }
     }
 
     /**

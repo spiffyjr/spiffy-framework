@@ -13,6 +13,12 @@ interface ApplicationPackage extends ConfigProvider
     public function bootstrap(Application $app);
 
     /**
+     * @param ConsoleApplication $app
+     * @return void
+     */
+    public function bootstrapConsole(ConsoleApplication $app);
+
+    /**
      * @return string
      */
     public function getName();

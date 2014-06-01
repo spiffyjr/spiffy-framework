@@ -133,7 +133,7 @@ class BootstrapPlugin implements Plugin
         $i = $app->getInjector();
         $appConfig = $app->getConfig();
 
-        $pm = new PackageManager();
+        $pm = new PackageManager($appConfig->getConfigOverridePattern(), $appConfig->getConfigOverrideFlags());
         $pm->events()->plug(new PackageManagerPlugin($appConfig));
 
         $pm->add('Spiffy\\Framework');

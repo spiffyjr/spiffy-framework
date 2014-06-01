@@ -31,17 +31,8 @@ class PackageManagerPlugin implements Plugin
      */
     public function plug(Manager $events)
     {
-        // The default load process.
-        $events->plug(new LoadModulesPlugin());
-
-        // Custom merging of our actions, routes, and services.
+        // custom merging of our actions, routes, and services.
         $events->on(PackageManager::EVENT_MERGE_CONFIG, [$this, 'mergeApplicationPackageConfig']);
-
-        // getConfig() is handled by the PackageManager already.
-        $events->plug(new ConfigMergePlugin(
-            $this->config->getConfigOverridePattern(),
-            $this->config->getConfigOverrideFlags()
-        ));
     }
 
     /**

@@ -54,7 +54,7 @@ $config = [
              */
             'strategies' => [
                 'spiffy.view.twig.twig-strategy',
-                'spiffy.view.json-view-strategy',
+                'spiffy.view.json-strategy',
             ],
 
             /*
