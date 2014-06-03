@@ -2,7 +2,10 @@
 
 namespace Spiffy\Framework\Action;
 
-interface ApplicationAction
-{
+use Spiffy\Dispatch\Dispatchable;
+use Spiffy\Framework\ApplicationEventAware;
+use Spiffy\Inject\InjectorAware;
 
+interface ApplicationAction extends ApplicationEventAware, Dispatchable, InjectorAware
+{
 }

@@ -27,8 +27,8 @@ $config = [
              * A list of options that get passed directly to Twig_Environment.
              */
             'options' => [
-                'cache' => 'cache/twig',
-                'debug' => isset($_ENV['debug']) && $_ENV['debug'],
+                'cache' => (isset($_ENV['debug']) && $_ENV['debug']) ? null : 'cache/twig',
+                'debug' => (isset($_ENV['debug']) && $_ENV['debug']),
             ],
         ],
 

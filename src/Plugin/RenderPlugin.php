@@ -6,7 +6,7 @@ use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Spiffy\View\Model;
+use Spiffy\View\ViewModel;
 
 class RenderPlugin implements Plugin
 {
@@ -25,7 +25,7 @@ class RenderPlugin implements Plugin
     {
         $model = $e->getModel();
 
-        if (!$model instanceof Model) {
+        if (!$model instanceof ViewModel) {
             return;
         }
 

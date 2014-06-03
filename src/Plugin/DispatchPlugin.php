@@ -68,6 +68,9 @@ class DispatchPlugin implements Plugin
         }
 
         try {
+            $match->set('__dispatcher', $d);
+            $match->set('__event', $e);
+
             $this->finish($e, $d->ispatch($action, $match->getParams()));
             return;
         } catch (\Exception $ex) {

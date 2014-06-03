@@ -148,6 +148,10 @@ class ApplicationEvent extends Event
      */
     final public function getResponse()
     {
+        if ($this->response instanceof Response) {
+            return $this->response;
+        }
+        $this->response = new Response();
         return $this->response;
     }
 
