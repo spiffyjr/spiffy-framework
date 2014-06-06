@@ -78,8 +78,14 @@ abstract class AbstractPackage implements ApplicationPackage
             return $this->name;
         }
 
+        $replace = function ($match)
+        {
+            return $match[1] . '-' . $match[2];
+        };
+
         $name = preg_replace('@Package$@', '', $this->getNamespace());
         $name = str_replace('\\', '.', $name);
+        $name = preg_replace_callback('@([a-z])([A-Z])@', $replace, $name);
         $name = strtolower($name);
 
         if (strstr($name, '.')) {

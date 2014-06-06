@@ -36,6 +36,11 @@ abstract class AbstractAction implements ApplicationAction
     }
 
     /**
+     * @return \Spiffy\View\Model|null|array
+     */
+    abstract public function __invoke();
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
     final public function getRequest()

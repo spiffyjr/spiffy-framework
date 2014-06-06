@@ -15,7 +15,7 @@ class RespondPlugin implements Plugin
      */
     final public function plug(Manager $events)
     {
-        $events->on(Application::EVENT_RESPOND, [$this, 'respond']);
+        $events->on(Application::EVENT_RESPOND, [$this, 'respond'], -1000);
     }
 
     /**
@@ -26,9 +26,8 @@ class RespondPlugin implements Plugin
     {
         $response = ($e->getResponse() instanceof Response) ? $e->getResponse() : new Response();
 
-        if ($e->getRenderResult()) {
+        if (!$response->getContent() && $e->getRenderResult()) {
             $response->setContent($e->getRenderResult());
         }
-        $response->send();
     }
 }

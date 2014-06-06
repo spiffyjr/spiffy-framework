@@ -15,17 +15,18 @@ use Spiffy\Route\Router;
 use Spiffy\View\ViewStrategy;
 use Symfony\Component\HttpFoundation\Request;
 
-class BootstrapPlugin implements Plugin
+final class BootstrapPlugin implements Plugin
 {
     /**
      * {@inheritDoc}
      */
-    final public function plug(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectEnvironment'], 1000);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createPackageManager'], 900);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectApplicationPackageConfigs'], 800);
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectServices'], 700);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectPlugins'], 700);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectServices'], 600);
 
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createDispatcher']);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createRequest']);
@@ -38,7 +39,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param ApplicationEvent $e
      */
-    final public function injectEnvironment(ApplicationEvent $e)
+    public function injectEnvironment(ApplicationEvent $e)
     {
         $config = $e->getApplication()->getConfig();
 
@@ -48,17 +49,35 @@ class BootstrapPlugin implements Plugin
     }
 
     /**
-     * @param \Spiffy\Framework\ApplicationEvent $e
+     * @param ApplicationEvent $e
      */
-    final public function injectServices(ApplicationEvent $e)
+    public function injectPlugins(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
 
-        $pm = $i->nvoke('PackageManager');
-        $services = $pm->getMergedConfig()['framework']['services'];
+        foreach ($i['framework']['plugins'] as $plugin) {
+            if (empty($plugin)) {
+                continue;
+            }
 
-        foreach ($services as $name => $spec) {
+            $app->events()->plug(InjectorUtils::get($i, $plugin));
+        }
+    }
+
+    /**
+     * @param \Spiffy\Framework\ApplicationEvent $e
+     */
+    public function injectServices(ApplicationEvent $e)
+    {
+        $app = $e->getApplication();
+        $i = $app->getInjector();
+
+        foreach ($i['framework']['services'] as $name => $spec) {
+            if (empty($spec)) {
+                continue;
+            }
+
             $i->nject($name, $spec);
         }
     }
@@ -66,7 +85,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function injectApplicationPackageConfigs(ApplicationEvent $e)
+    public function injectApplicationPackageConfigs(ApplicationEvent $e)
     {
         $i = $e->getApplication()->getInjector();
         $pm = $i->nvoke('PackageManager');
@@ -82,7 +101,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function bootstrapApplicatonPackages(ApplicationEvent $e)
+    public function bootstrapApplicatonPackages(ApplicationEvent $e)
     {
         $pm = $e->getApplication()->getInjector()->nvoke('PackageManager');
 
@@ -97,7 +116,7 @@ class BootstrapPlugin implements Plugin
      * @param \Spiffy\Framework\ApplicationEvent $e
      * @throws Exception\InvalidFallbackStrategy
      */
-    final public function createViewManager(ApplicationEvent $e)
+    public function createViewManager(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
@@ -115,6 +134,10 @@ class BootstrapPlugin implements Plugin
         $vm = new ViewManager($fallback);
 
         foreach ($config['strategies'] as $strategy) {
+            if (empty($strategy)) {
+                continue;
+            }
+
             $vm->addStrategy(InjectorUtils::get($i, $strategy));
         }
 
@@ -122,12 +145,14 @@ class BootstrapPlugin implements Plugin
         $vm->setNotFoundTemplate($config['not_found_template']);
 
         $app->events()->plug($vm);
+
+        $i->nject('ViewManager', $vm);
     }
 
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function createPackageManager(ApplicationEvent $e)
+    public function createPackageManager(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
@@ -138,8 +163,11 @@ class BootstrapPlugin implements Plugin
 
         $pm->add('Spiffy\\Framework');
         foreach ($appConfig->getPackages() as $package) {
-            if ($app->isDebug() && $package[0] == '?') {
-                continue;
+            if ($package[0] == '?') {
+                if ($app->isDebug()) {
+                    continue;
+                }
+                $package = substr($package, 1);
             }
             $pm->add($package);
         }
@@ -151,7 +179,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function createRequest(ApplicationEvent $e)
+    public function createRequest(ApplicationEvent $e)
     {
         $i = $e->getApplication()->getInjector();
         $i->nject('Request', Request::createFromGlobals());
@@ -160,7 +188,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function createDispatcher(ApplicationEvent $e)
+    public function createDispatcher(ApplicationEvent $e)
     {
         $r = new Dispatcher();
 
@@ -171,7 +199,7 @@ class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function createRouter(ApplicationEvent $e)
+    public function createRouter(ApplicationEvent $e)
     {
         $r = new Router();
 

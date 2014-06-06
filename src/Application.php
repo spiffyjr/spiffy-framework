@@ -6,6 +6,7 @@ use Spiffy\Event\EventsAwareTrait;
 use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
 use Spiffy\Inject\InjectorUtils;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 final class Application
 {
@@ -49,7 +50,7 @@ final class Application
     /**
      * @param array $config
      */
-    final public function __construct(array $config = [])
+    public function __construct(array $config = [])
     {
         $this->config = new ApplicationConfig($config);
         $this->injector = new Injector();
@@ -58,13 +59,13 @@ final class Application
     /**
      * @return bool
      */
-    final public function isDebug()
+    public function isDebug()
     {
         return $this->config->isDebug();
     }
 
     /**
-     * Bootstarp the application by firing EVENT_BOOTSTRAP. Certain services are expected
+     * Bootstrap the application by firing EVENT_BOOTSTRAP. Certain services are expected
      * to exist After bootstrapping. If you override the default plugins you are required
      * to ensure they exist. There are no safety checks!
      *
@@ -74,7 +75,7 @@ final class Application
      *
      * @return $this
      */
-    final public function bootstrap()
+    public function bootstrap()
     {
         $event = $this->getEvent();
         $event->setType(self::EVENT_BOOTSTRAP);
@@ -91,7 +92,7 @@ final class Application
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    final public function run()
+    public function run()
     {
         $event = $this->getEvent();
 
@@ -113,7 +114,7 @@ final class Application
     /**
      * @return \Spiffy\Framework\ApplicationEvent
      */
-    final public function getEvent()
+    public function getEvent()
     {
         if (!$this->event instanceof ApplicationEvent) {
             $this->event = new ApplicationEvent($this);
@@ -124,7 +125,7 @@ final class Application
     /**
      * @return \Spiffy\Inject\Injector
      */
-    final public function getInjector()
+    public function getInjector()
     {
         return $this->injector;
     }
@@ -132,7 +133,7 @@ final class Application
     /**
      * @return \Spiffy\Framework\ApplicationConfig
      */
-    final public function getConfig()
+    public function getConfig()
     {
         return $this->config;
     }
@@ -140,7 +141,7 @@ final class Application
     /**
      * @return \Spiffy\Package\PackageManager
      */
-    final public function getPackageManager()
+    public function getPackageManager()
     {
         return $this->packageManager;
     }
@@ -148,7 +149,7 @@ final class Application
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    final public function getResponse()
+    public function getResponse()
     {
         return $this->getEvent()->getResponse();
     }
@@ -156,7 +157,7 @@ final class Application
     /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
-    final public function getRequest()
+    public function getRequest()
     {
         return $this->getEvent()->getRequest();
     }

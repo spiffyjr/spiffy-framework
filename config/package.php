@@ -9,6 +9,13 @@ $config = [
         'actions' => [],
 
         /*
+         * An array of plugins that can extend the default functionality of the Application. Plugins can be
+         * a service to pull from the Injector. These plugins are added during bootstrapping() so you can not
+         * add plugins to the bootstrap event. To handle bootstrap events use the boostrap() method in your package.
+         */
+        'plugins' => [],
+
+        /*
          * Setup the Twig_Environment which is the default View Strategy.
          */
         'twig' => [
@@ -61,7 +68,7 @@ $config = [
              * The default strategy to use if no other strategy can handle the action result. The canRender() method on
              * this strategy is not-verified because it *must* be able to handle any results.
              */
-            'fallback_strategy' => 'Spiffy\View\VardumpStrategy',
+            'fallback_strategy' => 'Spiffy\View\Twig\TwigStrategy',
         ],
 
         /*
