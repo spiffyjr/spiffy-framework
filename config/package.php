@@ -68,7 +68,7 @@ $config = [
              * The default strategy to use if no other strategy can handle the action result. The canRender() method on
              * this strategy is not-verified because it *must* be able to handle any results.
              */
-            'fallback_strategy' => 'Spiffy\View\Twig\TwigStrategy',
+            'fallback_strategy' => 'spiffy.view.twig.twig-strategy',
         ],
 
         /*
