@@ -7,18 +7,18 @@ use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Spiffy\Framework\ApplicationPackage;
+use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
 use Spiffy\View\Model;
 use Spiffy\View\ViewModel;
 use Symfony\Component\HttpFoundation\Response;
 
-class DispatchPlugin implements Plugin
+final class DispatchPlugin implements Plugin
 {
     /**
      * {@inheritDoc}
      */
-    final public function plug(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(Application::EVENT_DISPATCH, [$this, 'injectActions'], 1000);
         $events->on(Application::EVENT_DISPATCH, [$this, 'dispatch']);
@@ -29,17 +29,14 @@ class DispatchPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function injectActions(ApplicationEvent $e)
+    public function injectActions(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
 
-        $pm = $app->getPackageManager();
-        $actions = $pm->getMergedConfig()['framework']['actions'];
-
         /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
         $dispatcher = $i->nvoke('Dispatcher');
-        foreach ($actions as $name => $spec) {
+        foreach ($i['framework']['actions'] as $name => $spec) {
             $dispatcher->add($name, $spec);
         }
     }
@@ -47,11 +44,10 @@ class DispatchPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function dispatch(ApplicationEvent $e)
+    public function dispatch(ApplicationEvent $e)
     {
         $match = $e->getRouteMatch();
         if (!$match instanceof RouteMatch) {
-            $this->finish($e, $this->routeNotFound($e));
             return;
         }
 
@@ -82,7 +78,7 @@ class DispatchPlugin implements Plugin
     /**
      * @param ApplicationEvent $e
      */
-    final public function createModelFromArray(ApplicationEvent $e)
+    public function createModelFromArray(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
         if (!is_array($result) || $e->getError()) {
@@ -94,7 +90,7 @@ class DispatchPlugin implements Plugin
     /**
      * @param ApplicationEvent $e
      */
-    final public function createModelFromNull(ApplicationEvent $e)
+    public function createModelFromNull(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
         if (null !== $result || $e->getError()) {
@@ -142,23 +138,6 @@ class DispatchPlugin implements Plugin
 
     /**
      * @param ApplicationEvent $e
-     * @return mixed
-     */
-    private function routeNotFound(ApplicationEvent $e)
-    {
-        $e->setError(Application::ERROR_ROUTE_INVALID);
-        $e->setType(Application::EVENT_ROUTE_ERROR);
-        $result = $e->getApplication()->events()->fire($e);
-
-        if ($result->count() == 0) {
-            return null;
-        }
-
-        return $result->top();
-    }
-
-    /**
-     * @param ApplicationEvent $e
      * @param mixed $result
      */
     private function finish(ApplicationEvent $e, $result)
@@ -167,7 +146,7 @@ class DispatchPlugin implements Plugin
 
         if ($result instanceof Response) {
             $e->setResponse($result);
-        } else if ($result instanceof Model) {
+        } elseif ($result instanceof Model) {
             $e->setModel($result);
         }
     }

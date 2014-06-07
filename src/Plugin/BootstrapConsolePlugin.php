@@ -30,13 +30,13 @@ final class BootstrapConsolePlugin implements Plugin
      */
     public function plug(Manager $events)
     {
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'bootstrapApplicatonPackages'], -1000);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'bootstrapApplicationPackages'], -1000);
     }
 
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    public function bootstrapApplicatonPackages(ApplicationEvent $e)
+    public function bootstrapApplicationPackages(ApplicationEvent $e)
     {
         $pm = $e->getApplication()->getInjector()->nvoke('PackageManager');
 

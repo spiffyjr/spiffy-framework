@@ -60,6 +60,7 @@ class RoutePlugin implements Plugin
 
         $match = $router->match($request->getRequestUri(), $request->server->all());
         if (null === $match) {
+            $e->setError(Application::ERROR_ROUTE_INVALID);
             $e->setType(Application::EVENT_ROUTE_ERROR);
             $app->events()->fire($e);
 

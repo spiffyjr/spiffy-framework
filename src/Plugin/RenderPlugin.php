@@ -8,7 +8,7 @@ use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
 use Spiffy\View\ViewModel;
 
-class RenderPlugin implements Plugin
+final class RenderPlugin implements Plugin
 {
     /**
      * {@inheritDoc}
@@ -21,7 +21,7 @@ class RenderPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function injectTemplate(ApplicationEvent $e)
+    public function injectTemplate(ApplicationEvent $e)
     {
         $model = $e->getModel();
 

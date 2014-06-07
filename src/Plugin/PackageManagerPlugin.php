@@ -8,10 +8,8 @@ use Spiffy\Event\Plugin;
 use Spiffy\Framework\ApplicationConfig;
 use Spiffy\Framework\ApplicationPackage;
 use Spiffy\Package\PackageManager;
-use Spiffy\Package\Plugin\ConfigMergePlugin;
-use Spiffy\Package\Plugin\LoadModulesPlugin;
 
-class PackageManagerPlugin implements Plugin
+final class PackageManagerPlugin implements Plugin
 {
     /**
      * @var \Spiffy\Framework\ApplicationConfig
@@ -21,7 +19,7 @@ class PackageManagerPlugin implements Plugin
     /**
      * @param ApplicationConfig $config
      */
-    final public function __construct(ApplicationConfig $config)
+    public function __construct(ApplicationConfig $config)
     {
         $this->config = $config;
     }
@@ -39,7 +37,7 @@ class PackageManagerPlugin implements Plugin
      * @param Event $e
      * @return array
      */
-    final public function mergeApplicationPackageConfig(Event $e)
+    public function mergeApplicationPackageConfig(Event $e)
     {
         /** @var \Spiffy\Package\PackageManager $pm */
         $pm = $e->getTarget();

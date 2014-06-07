@@ -43,11 +43,6 @@ final class Application
     private $injector;
 
     /**
-     * @var \Spiffy\Package\PackageManager
-     */
-    private $packageManager;
-
-    /**
      * @param array $config
      */
     public function __construct(array $config = [])
@@ -70,8 +65,11 @@ final class Application
      * to ensure they exist. There are no safety checks!
      *
      * The following is a list of expected services:
+     * - Dispatcher
      * - PackageManager
      * - Request
+     * - Router
+     * - ViewManager
      *
      * @return $this
      */
@@ -82,8 +80,6 @@ final class Application
         $this->events()->fire($event);
 
         $i = $this->getInjector();
-
-        $this->packageManager = $i->nvoke('PackageManager');
         $this->getEvent()->setRequest($i->nvoke('Request'));
 
         return $this;
@@ -143,7 +139,7 @@ final class Application
      */
     public function getPackageManager()
     {
-        return $this->packageManager;
+        return $this->getInjector()->nvoke('PackageManager');
     }
 
     /**

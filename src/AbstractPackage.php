@@ -78,8 +78,7 @@ abstract class AbstractPackage implements ApplicationPackage
             return $this->name;
         }
 
-        $replace = function ($match)
-        {
+        $replace = function ($match) {
             return $match[1] . '-' . $match[2];
         };
 
