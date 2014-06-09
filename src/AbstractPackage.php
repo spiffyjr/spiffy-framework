@@ -34,7 +34,7 @@ abstract class AbstractPackage implements ApplicationPackage
      */
     public function bootstrapConsole(ConsoleApplication $console)
     {
-        $consoleDir = realpath($this->getPath() . '/Console');
+        $consoleDir = realpath($this->getPath() . '/src/Console');
         if (!$consoleDir) {
             return;
         }
@@ -120,17 +120,8 @@ abstract class AbstractPackage implements ApplicationPackage
         }
 
         $refl = new \ReflectionObject($this);
-        $this->path = dirname($refl->getFileName());
+        $this->path = realpath(dirname($refl->getFileName()) . '/..');
         return $this->path;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getActions()
-    {
-        $path = $this->getPath();
-        return file_exists($path . '/../config/actions.php') ? include $path . '/../config/actions.php' : [];
     }
 
     /**
@@ -139,7 +130,7 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getConfig()
     {
         $path = $this->getPath();
-        return file_exists($path . '/../config/package.php') ? include $path . '/../config/package.php' : [];
+        return file_exists($path . '/config/package.php') ? include $path . '/config/package.php' : [];
     }
 
     /**
@@ -148,7 +139,7 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getRoutes()
     {
         $path = $this->getPath();
-        return file_exists($path . '/../config/routes.php') ? include $path . '/../config/routes.php' : [];
+        return file_exists($path . '/config/routes.php') ? include $path . '/config/routes.php' : [];
     }
 
     /**
@@ -157,6 +148,6 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getServices()
     {
         $path = $this->getPath();
-        return file_exists($path . '/../config/services.php') ? include $path . '/../config/services.php' : [];
+        return file_exists($path . '/config/services.php') ? include $path . '/config/services.php' : [];
     }
 }

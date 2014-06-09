@@ -33,8 +33,16 @@ class RoutePlugin implements Plugin
 
         /** @var \Spiffy\Route\Router $router */
         $router = $i->nvoke('Router');
+
+        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
+        $dispatcher = $i->nvoke('Dispatcher');
+
         foreach ($routes as $name => $spec) {
-            $options = ['defaults' => ['action' => $spec[1]]];
+            $action = $spec[1];
+
+            $dispatcher->add($action, $action);
+
+            $options = ['defaults' => ['action' => $action]];
 
             if (isset($spec[2]) && is_array($spec[2])) {
                 $options = array_merge_recursive($spec[2], $options);
