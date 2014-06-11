@@ -122,7 +122,7 @@ final class DispatchPlugin implements Plugin
     public function handleDispatchInvalidResult(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
-        if ($result instanceof Model) {
+        if (is_null($result) || is_array($result) || $result instanceof Model) {
             return;
         }
 
