@@ -7,6 +7,7 @@ use Spiffy\Event\Plugin;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
 use Spiffy\View\ViewStrategy;
+use Symfony\Component\HttpFoundation\Response;
 
 class ViewManager implements Plugin
 {
@@ -59,6 +60,10 @@ class ViewManager implements Plugin
      */
     final public function render(ApplicationEvent $e)
     {
+        if ($e->getDispatchResult() instanceof Response) {
+            return;
+        }
+
         $result = null;
 
         foreach ($this->strategies as $strategy) {

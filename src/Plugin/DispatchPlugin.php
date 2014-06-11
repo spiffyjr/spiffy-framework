@@ -122,12 +122,9 @@ final class DispatchPlugin implements Plugin
     public function handleDispatchInvalidResult(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
-        if (is_null($result) || is_array($result) || $result instanceof Model) {
+        if ($e->getModel() || $result instanceof Model) {
             return;
         }
-
-        $response = $e->getResponse();
-        $response->setStatusCode(500);
 
         $i = $e->getApplication()->getInjector();
         $action = new DispatchInvalidResultAction($i->nvoke('ViewManager'));
