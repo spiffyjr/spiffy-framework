@@ -28,7 +28,9 @@ $config = [
              * A list of paths for the Twig_Loader_Filesystem. If you use a custom loader then this option
              * is never used.
              */
-            'paths' => [],
+            'paths' => [
+                'framework' => __DIR__ . '/../view'
+            ],
 
             /*
              * A list of options that get passed directly to Twig_Environment.

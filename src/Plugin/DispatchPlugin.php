@@ -2,12 +2,13 @@
 
 namespace Spiffy\Framework\Plugin;
 
-use Exception;
 use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
+use Spiffy\Framework\Action\DispatchExceptionAction;
+use Spiffy\Framework\Action\DispatchInvalidAction;
+use Spiffy\Framework\Action\DispatchInvalidResultAction;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
 use Spiffy\View\Model;
 use Spiffy\View\ViewModel;
@@ -20,9 +21,29 @@ final class DispatchPlugin implements Plugin
      */
     public function plug(Manager $events)
     {
+        $events->on(Application::EVENT_DISPATCH, [$this, 'injectActions'], 1000);
         $events->on(Application::EVENT_DISPATCH, [$this, 'dispatch']);
-        $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromArray'], -90);
-        $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromNull'], -90);
+        $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromArray'], -900);
+        $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromNull'], -900);
+        $events->on(Application::EVENT_DISPATCH, [$this, 'handleDispatchInvalidResult'], -1000);
+
+        $events->on(Application::EVENT_DISPATCH_ERROR, [$this, 'handleDispatchInvalid']);
+        $events->on(Application::EVENT_DISPATCH_ERROR, [$this, 'handleDispatchException']);
+    }
+
+    /**
+     * @param \Spiffy\Framework\ApplicationEvent $e
+     */
+    public function injectActions(ApplicationEvent $e)
+    {
+        $app = $e->getApplication();
+        $i = $app->getInjector();
+
+        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
+        $dispatcher = $i->nvoke('Dispatcher');
+        foreach ($i['framework']['actions'] as $name => $spec) {
+            $dispatcher->add($name, $spec);
+        }
     }
 
     /**
@@ -30,6 +51,10 @@ final class DispatchPlugin implements Plugin
      */
     public function dispatch(ApplicationEvent $e)
     {
+        if ($e->getDispatchResult()) {
+            return;
+        }
+
         $match = $e->getRouteMatch();
         if (!$match instanceof RouteMatch) {
             return;
@@ -39,11 +64,16 @@ final class DispatchPlugin implements Plugin
         $i = $app->getInjector();
         $action = $match->get('action');
 
-        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
+        /** @var \Spiffy\Dispatch\Dispatcher $d */
         $d = $i->nvoke('Dispatcher');
 
         if (!$d->has($action)) {
-            $this->finish($e, $this->invalidAction($e));
+            $e->setError(Application::ERROR_DISPATCH_INVALID);
+            $e->setType(Application::EVENT_DISPATCH_ERROR);
+            $e->set('action', $action);
+            $e->getApplication()->events()->fire($e);
+
+            $this->finish($e);
             return;
         }
 
@@ -51,11 +81,14 @@ final class DispatchPlugin implements Plugin
             $match->set('__dispatcher', $d);
             $match->set('__event', $e);
 
-            $this->finish($e, $d->ispatch($action, $match->getParams()));
-            return;
+            $e->setDispatchResult($d->ispatch($action, $match->getParams()));
+            $this->finish($e);
         } catch (\Exception $ex) {
-            $this->finish($e, $this->actionException($ex, $e));
-            return;
+            $e->setError(Application::ERROR_DISPATCH_EXCEPTION);
+            $e->setType(Application::EVENT_DISPATCH_ERROR);
+            $e->set('exception', $ex);
+            $e->getApplication()->events()->fire($e);
+            $this->finish($e);
         }
     }
 
@@ -84,49 +117,72 @@ final class DispatchPlugin implements Plugin
     }
 
     /**
-     * @param Exception $ex
      * @param ApplicationEvent $e
-     * @return mixed|null
      */
-    private function actionException(Exception $ex, ApplicationEvent $e)
+    public function handleDispatchInvalidResult(ApplicationEvent $e)
     {
-        $e->setError(Application::ERROR_DISPATCH_EXCEPTION);
-        $e->setType(Application::EVENT_DISPATCH_ERROR);
-        $e->set('exception', $ex);
-
-        $result = $e->getApplication()->events()->fire($e);
-
-        if ($result->count() == 0) {
-            return null;
+        $result = $e->getDispatchResult();
+        if ($result instanceof Model) {
+            return;
         }
 
-        return $result->top();
+        $response = $e->getResponse();
+        $response->setStatusCode(500);
+
+        $i = $e->getApplication()->getInjector();
+        $action = new DispatchInvalidResultAction($i->nvoke('ViewManager'));
+
+        $response = $e->getResponse();
+        $response->setStatusCode(500);
+
+        $e->setDispatchResult($action($e->getDispatchResult()));
+        $this->finish($e);
     }
 
     /**
      * @param ApplicationEvent $e
-     * @return mixed|null
+     * @return null|ViewModel
      */
-    private function invalidAction(ApplicationEvent $e)
+    public function handleDispatchInvalid(ApplicationEvent $e)
     {
-        $e->setError(Application::ERROR_DISPATCH_INVALID);
-        $e->setType(Application::EVENT_DISPATCH_ERROR);
-        $result = $e->getApplication()->events()->fire($e);
-
-        if ($result->count() == 0) {
-            return null;
+        if ($e->getError() !== Application::ERROR_DISPATCH_INVALID) {
+            return;
         }
 
-        return $result->top();
+        $i = $e->getApplication()->getInjector();
+        $action = new DispatchInvalidAction($i->nvoke('ViewManager'));
+
+        $response = $e->getResponse();
+        $response->setStatusCode(404);
+
+        $e->setDispatchResult($action($e->get('action')));
     }
 
     /**
      * @param ApplicationEvent $e
-     * @param mixed $result
+     * @return null|ViewModel
      */
-    private function finish(ApplicationEvent $e, $result)
+    public function handleDispatchException(ApplicationEvent $e)
     {
-        $e->setDispatchResult($result);
+        if ($e->getError() !== Application::ERROR_DISPATCH_EXCEPTION) {
+            return;
+        }
+
+        $i = $e->getApplication()->getInjector();
+        $action = new DispatchExceptionAction($i->nvoke('ViewManager'));
+
+        $response = $e->getResponse();
+        $response->setStatusCode(500);
+
+        $e->setDispatchResult($action($e->get('exception')));
+    }
+
+    /**
+     * @param ApplicationEvent $e
+     */
+    private function finish(ApplicationEvent $e)
+    {
+        $result = $e->getDispatchResult();
 
         if ($result instanceof Response) {
             $e->setResponse($result);

@@ -1,0 +1,10 @@
+<p>
+    A route matching <strong>{{ uri }}</strong> does not exist. Verify that your configuration
+    is correct and try again.
+</p>
+<pre>
+// config/routes.php
+return [
+    'route.name' => ['{{ uri }}', 'action.name']
+];
+</pre>

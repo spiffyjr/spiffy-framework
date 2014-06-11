@@ -6,6 +6,6 @@ use Spiffy\Dispatch\Dispatchable;
 use Spiffy\Framework\ApplicationEventAware;
 use Spiffy\Inject\InjectorAware;
 
-interface ApplicationAction extends ApplicationEventAware, Dispatchable, InjectorAware
+interface ApplicationAction extends ApplicationEventAware, Dispatchable
 {
 }

@@ -4,26 +4,27 @@ namespace Spiffy\Framework\Plugin;
 
 use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
+use Spiffy\Framework\Action\InvalidRouteAction;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Symfony\Component\HttpFoundation\Response;
 
-class RoutePlugin implements Plugin
+final class RoutePlugin implements Plugin
 {
     /**
      * {@inheritDoc}
      */
-    final public function plug(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(Application::EVENT_ROUTE, [$this, 'injectRoutes'], 1000);
         $events->on(Application::EVENT_ROUTE, [$this, 'route']);
-        $events->on(Application::EVENT_ROUTE_ERROR, [$this, 'route404']);
+
+        $events->on(Application::EVENT_ROUTE_ERROR, [$this, 'handleInvalidRoute']);
     }
 
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function injectRoutes(ApplicationEvent $e)
+    public function injectRoutes(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
@@ -34,15 +35,8 @@ class RoutePlugin implements Plugin
         /** @var \Spiffy\Route\Router $router */
         $router = $i->nvoke('Router');
 
-        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
-        $dispatcher = $i->nvoke('Dispatcher');
-
         foreach ($routes as $name => $spec) {
-            $action = $spec[1];
-
-            $dispatcher->add($action, $action);
-
-            $options = ['defaults' => ['action' => $action]];
+            $options = ['defaults' => ['action' => $spec[1]]];
 
             if (isset($spec[2]) && is_array($spec[2])) {
                 $options = array_merge_recursive($spec[2], $options);
@@ -55,7 +49,7 @@ class RoutePlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    final public function route(ApplicationEvent $e)
+    public function route(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
@@ -65,11 +59,13 @@ class RoutePlugin implements Plugin
 
         /** @var \Spiffy\Route\Router $router */
         $router = $i->nvoke('Router');
+        $server = $request->server->all();
 
-        $match = $router->match($request->getRequestUri(), $request->server->all());
+        $match = $router->match($request->getRequestUri(), $server);
         if (null === $match) {
             $e->setError(Application::ERROR_ROUTE_INVALID);
             $e->setType(Application::EVENT_ROUTE_ERROR);
+            $e->setTarget($server);
             $app->events()->fire($e);
 
             return;
@@ -80,17 +76,24 @@ class RoutePlugin implements Plugin
     }
 
     /**
-     * @param \Spiffy\Framework\ApplicationEvent $e
+     * @param ApplicationEvent $e
+     * @return null|\Spiffy\View\ViewModel
      */
-    final public function route404(ApplicationEvent $e)
+    public function handleInvalidRoute(ApplicationEvent $e)
     {
-        $response = $e->getResponse();
-
-        if (!$response) {
-            $response = new Response();
-            $e->setResponse($response);
+        if ($e->getError() !== Application::ERROR_ROUTE_INVALID) {
+            return null;
         }
 
-        $response->setStatusCode(Response::HTTP_NOT_FOUND);
+        $i = $e->getApplication()->getInjector();
+        $action = new InvalidRouteAction($i->nvoke('ViewManager'));
+
+        $response = $e->getResponse();
+        $response->setStatusCode(404);
+
+        $result = $action($e->getTarget());
+
+        $e->setModel($result);
+        $e->setDispatchResult($result);
     }
 }

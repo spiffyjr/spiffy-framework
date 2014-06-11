@@ -1,0 +1,17 @@
+{% import _self as exceptions %}
+
+<p class="lead">An invalid result was returned from the dispatch action.</p>
+
+<p>{{ result }}</p>
+
+<h2>Suggested Fix</h2>
+<p>
+    The most common reason for this is that your action maps incorrectly to an invalid class. Verify
+    that the mapped action is a dispatchable object.
+</p>
+<pre>
+// config/actions.php
+return [
+    '{{ result }}' => 'FQCN\To\Action'
+];
+</pre>

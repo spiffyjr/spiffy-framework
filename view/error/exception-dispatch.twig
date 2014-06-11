@@ -1,0 +1,32 @@
+{% import _self as exceptions %}
+
+{% macro dump(exception) %}
+    <h3>{{ exception_class }}</h3>
+    <dl>
+        <dt>File:</dt>
+        <dd>
+            <pre>{{ exception.getFile() }}:{{ exception.getLine() }}</pre>
+        </dd>
+        <dt>Message:</dt>
+        <dd>
+            <pre>{{ exception.getMessage() ? exception.getMessage() : 'No message available' }}</pre>
+        </dd>
+        <dt>Stack trace:</dt>
+        <dd>
+            <pre class="pre-scrollable">{{  exception.getTraceAsString() }}</pre>
+        </dd>
+    </dl>
+{% endmacro %}
+
+<p class="lead">An exception occured during dispatching.</p>
+
+<h2>Additional information:</h2>
+{{ exceptions.dump(exception) }}
+
+<ul class="list-unstyled">
+{% for exception in previous_exceptions %}
+    <li>
+        {{ exceptions.dump(exception) }}
+    </li>
+{% endfor %}
+</ul>

@@ -8,7 +8,6 @@ use Spiffy\Inject\InjectorAwareTrait;
 abstract class AbstractAction implements ApplicationAction
 {
     use ApplicationEventAwareTrait;
-    use InjectorAwareTrait;
 
     /**
      * {@inheritDoc}
@@ -27,11 +26,7 @@ abstract class AbstractAction implements ApplicationAction
         /** @var \Spiffy\Framework\ApplicationEvent $e */
         $e = $params['__event'];
 
-        $app = $e->getApplication();
-
         $this->setApplicationEvent($e);
-        $this->setInjector($app->getInjector());
-
         return $d->dispatchInvokable($this, $params);
     }
 
