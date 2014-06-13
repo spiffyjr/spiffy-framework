@@ -26,6 +26,8 @@ abstract class AbstractAction implements ApplicationAction
         /** @var \Spiffy\Framework\ApplicationEvent $e */
         $e = $params['__event'];
 
+        $e->set('__action', get_called_class());
+
         $this->setApplicationEvent($e);
         return $d->dispatchInvokable($this, $params);
     }

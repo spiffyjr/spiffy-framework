@@ -33,22 +33,8 @@ final class RenderPlugin implements Plugin
             return;
         }
 
-        $action = $e->getAction();
-        if (null === $action) {
-            return;
-        }
-
-        $i = $e->getApplication()->getInjector();
-
-        /** @var \Spiffy\Dispatch\Dispatcher $d */
-        $d = $i->nvoke('Dispatcher');
-
-        if (!$d->has($e->getAction())) {
-            return;
-        }
-
-        $action = $d->get($action);
-        if (!is_string($action)) {
+        $action = $e->get('__action');
+        if (!$action) {
             return;
         }
 

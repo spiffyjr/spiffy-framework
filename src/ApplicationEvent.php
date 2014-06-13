@@ -96,14 +96,6 @@ class ApplicationEvent extends Event
     }
 
     /**
-     * @return string
-     */
-    final public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
      * @param \Spiffy\View\Model $model
      */
     public function setModel(Model $model)

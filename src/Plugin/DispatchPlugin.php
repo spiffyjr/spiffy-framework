@@ -40,9 +40,14 @@ final class DispatchPlugin implements Plugin
         $i = $app->getInjector();
 
         /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
-        $dispatcher = $i->nvoke('Dispatcher');
+        $d = $i->nvoke('Dispatcher');
         foreach ($i['framework']['actions'] as $name => $spec) {
-            $dispatcher->add($name, $spec);
+            $d->add($name, function() use ($i, $d, $name, $spec) {
+                if (is_string($spec) && $i->has($spec)) {
+                    return $i->nvoke($spec);
+                }
+                return $spec;
+            });
         }
     }
 
@@ -122,7 +127,7 @@ final class DispatchPlugin implements Plugin
     public function handleDispatchInvalidResult(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
-        if ($e->getModel() || $result instanceof Model) {
+        if ($e->getModel() || $e->getResponse() || $result instanceof Model) {
             return;
         }
 
