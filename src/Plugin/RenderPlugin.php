@@ -38,7 +38,12 @@ final class RenderPlugin implements Plugin
             return;
         }
 
+        $replace = function($match) {
+            return $match[1] . '-' . $match[2];
+        };
+
         $template = preg_replace('@Action$@', '', $action);
+        $template = preg_replace_callback('@([a-z])([A-Z])@', $replace, $template);
         $template = strtolower($template);
         $template = str_replace('\\', '/', $template);
 
