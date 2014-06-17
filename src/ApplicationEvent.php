@@ -8,7 +8,7 @@ use Spiffy\View\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApplicationEvent extends Event
+final class ApplicationEvent extends Event
 {
     /**
      * @var string
@@ -58,7 +58,7 @@ class ApplicationEvent extends Event
     /**
      * @param \Spiffy\Framework\Application $application
      */
-    final public function __construct(Application $application)
+    public function __construct(Application $application)
     {
         $this->application = $application;
     }
@@ -66,7 +66,7 @@ class ApplicationEvent extends Event
     /**
      * @param string $error
      */
-    final public function setError($error)
+    public function setError($error)
     {
         $this->error = $error;
     }
@@ -74,7 +74,7 @@ class ApplicationEvent extends Event
     /**
      * @return string
      */
-    final public function getError()
+    public function getError()
     {
         return $this->error;
     }
@@ -82,15 +82,23 @@ class ApplicationEvent extends Event
     /**
      * @return bool
      */
-    final public function hasError()
+    public function hasError()
     {
         return $this->error !== null;
     }
 
     /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
      * @param string $action
      */
-    final public function setAction($action)
+    public function setAction($action)
     {
         $this->action = $action;
     }
@@ -114,7 +122,7 @@ class ApplicationEvent extends Event
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
-    final public function setRequest(Request $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
     }
@@ -122,7 +130,7 @@ class ApplicationEvent extends Event
     /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
-    final public function getRequest()
+    public function getRequest()
     {
         return $this->request;
     }
@@ -130,7 +138,7 @@ class ApplicationEvent extends Event
     /**
      * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    final public function setResponse(Response $response)
+    public function setResponse(Response $response)
     {
         $this->response = $response;
     }
@@ -138,7 +146,7 @@ class ApplicationEvent extends Event
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    final public function getResponse()
+    public function getResponse()
     {
         if ($this->response instanceof Response) {
             return $this->response;
@@ -150,7 +158,7 @@ class ApplicationEvent extends Event
     /**
      * @param \Spiffy\Route\RouteMatch $routeMatch
      */
-    final public function setRouteMatch(RouteMatch $routeMatch)
+    public function setRouteMatch(RouteMatch $routeMatch)
     {
         $this->routeMatch = $routeMatch;
     }
@@ -158,7 +166,7 @@ class ApplicationEvent extends Event
     /**
      * @return \Spiffy\Route\RouteMatch
      */
-    final public function getRouteMatch()
+    public function getRouteMatch()
     {
         return $this->routeMatch;
     }
@@ -166,7 +174,7 @@ class ApplicationEvent extends Event
     /**
      * @param mixed $dispatchResult
      */
-    final public function setDispatchResult($dispatchResult)
+    public function setDispatchResult($dispatchResult)
     {
         $this->dispatchResult = $dispatchResult;
     }
@@ -174,7 +182,7 @@ class ApplicationEvent extends Event
     /**
      * @return mixed
      */
-    final public function getDispatchResult()
+    public function getDispatchResult()
     {
         return $this->dispatchResult;
     }
@@ -182,7 +190,7 @@ class ApplicationEvent extends Event
     /**
      * @param string $renderResult
      */
-    final public function setRenderResult($renderResult)
+    public function setRenderResult($renderResult)
     {
         $this->renderResult = $renderResult;
     }
@@ -190,7 +198,7 @@ class ApplicationEvent extends Event
     /**
      * @return string
      */
-    final public function getRenderResult()
+    public function getRenderResult()
     {
         return $this->renderResult;
     }
@@ -198,7 +206,7 @@ class ApplicationEvent extends Event
     /**
      * @return \Spiffy\Framework\Application
      */
-    final public function getApplication()
+    public function getApplication()
     {
         return $this->application;
     }
