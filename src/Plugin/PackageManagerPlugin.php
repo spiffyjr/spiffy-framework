@@ -54,7 +54,6 @@ final class PackageManagerPlugin implements Plugin
                 continue;
             }
 
-            $config['framework']['actions'] = $pm->merge($config['framework']['actions'], $package->getActions());
             $config['framework']['routes'] = $pm->merge($config['framework']['routes'], $package->getRoutes());
             $config['framework']['services'] = $pm->merge($config['framework']['services'], $package->getServices());
         }

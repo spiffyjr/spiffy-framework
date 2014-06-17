@@ -127,15 +127,6 @@ abstract class AbstractPackage implements ApplicationPackage
     /**
      * {@inheritDoc}
      */
-    public function getActions()
-    {
-        $path = $this->getPath();
-        return file_exists($path . '/config/actions.php') ? include $path . '/config/actions.php' : [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig()
     {
         $path = $this->getPath();

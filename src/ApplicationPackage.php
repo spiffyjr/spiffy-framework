@@ -36,11 +36,6 @@ interface ApplicationPackage extends ConfigProvider
     /**
      * @return array
      */
-    public function getActions();
-
-    /**
-     * @return array
-     */
     public function getRoutes();
 
     /**

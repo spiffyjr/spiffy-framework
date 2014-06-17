@@ -15,7 +15,7 @@ final class RoutePlugin implements Plugin
      */
     public function plug(Manager $events)
     {
-        $events->on(Application::EVENT_ROUTE, [$this, 'injectRoutes'], 1000);
+        $events->on(Application::EVENT_ROUTE, [$this, 'injectRoutesAndActions'], 1000);
         $events->on(Application::EVENT_ROUTE, [$this, 'route']);
 
         $events->on(Application::EVENT_ROUTE_ERROR, [$this, 'handleInvalidRoute']);
@@ -24,7 +24,27 @@ final class RoutePlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    public function injectRoutes(ApplicationEvent $e)
+    public function injectActions(ApplicationEvent $e)
+    {
+        $app = $e->getApplication();
+        $i = $app->getInjector();
+
+        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
+        $d = $i->nvoke('Dispatcher');
+        foreach ($i['framework']['actions'] as $name => $spec) {
+            $d->add($name, function() use ($i, $d, $name, $spec) {
+                if (is_string($spec) && $i->has($spec)) {
+                    return $i->nvoke($spec);
+                }
+                return $spec;
+            });
+        }
+    }
+
+    /**
+     * @param \Spiffy\Framework\ApplicationEvent $e
+     */
+    public function injectRoutesAndActions(ApplicationEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
@@ -35,8 +55,19 @@ final class RoutePlugin implements Plugin
         /** @var \Spiffy\Route\Router $router */
         $router = $i->nvoke('Router');
 
+        /** @var \Spiffy\Dispatch\Dispatcher $d */
+        $d = $i->nvoke('Dispatcher');
+
         foreach ($routes as $name => $spec) {
-            $options = ['defaults' => ['action' => $spec[1]]];
+            $action = $spec[1];
+            $options = ['defaults' => ['action' => $action]];
+
+            $d->add($name, function() use ($i, $d, $action) {
+                if (is_string($action) && $i->has($action)) {
+                    return $i->nvoke($action);
+                }
+                return $action;
+            });
 
             if (isset($spec[2]) && is_array($spec[2])) {
                 $options = array_merge_recursive($spec[2], $options);

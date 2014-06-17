@@ -21,7 +21,6 @@ final class DispatchPlugin implements Plugin
      */
     public function plug(Manager $events)
     {
-        $events->on(Application::EVENT_DISPATCH, [$this, 'injectActions'], 1000);
         $events->on(Application::EVENT_DISPATCH, [$this, 'dispatch']);
         $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromArray'], -900);
         $events->on(Application::EVENT_DISPATCH, [$this, 'createModelFromNull'], -900);
@@ -29,26 +28,6 @@ final class DispatchPlugin implements Plugin
 
         $events->on(Application::EVENT_DISPATCH_ERROR, [$this, 'handleDispatchInvalid']);
         $events->on(Application::EVENT_DISPATCH_ERROR, [$this, 'handleDispatchException']);
-    }
-
-    /**
-     * @param \Spiffy\Framework\ApplicationEvent $e
-     */
-    public function injectActions(ApplicationEvent $e)
-    {
-        $app = $e->getApplication();
-        $i = $app->getInjector();
-
-        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
-        $d = $i->nvoke('Dispatcher');
-        foreach ($i['framework']['actions'] as $name => $spec) {
-            $d->add($name, function() use ($i, $d, $name, $spec) {
-                if (is_string($spec) && $i->has($spec)) {
-                    return $i->nvoke($spec);
-                }
-                return $spec;
-            });
-        }
     }
 
     /**
