@@ -1,10 +1,17 @@
 <p>
-    The action <strong>{{ action }}</strong> does not exist. Verify that your configuration
-    is correct and try again.
+    The action class <strong>{{ action }}</strong> does not exist and could not not be found in the Injector. Verify
+    that your configuration is correct and try again.
 </p>
 <pre>
-// config/actions.php
+// config/routes.php
 return [
-    '{{ action }}' => 'FQCN\To\Action'
+    // verify that <strong>{{ action }}</strong> exists
+    'route_name' => ['{{ uri }}', '{{ action }}']
 ];
+
+// config/services.php
+return [
+    // or define it in the injector
+    '{{ action }}' => 'FQCN\To\Action'
+}
 </pre>

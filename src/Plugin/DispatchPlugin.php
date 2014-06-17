@@ -51,7 +51,7 @@ final class DispatchPlugin implements Plugin
         /** @var \Spiffy\Dispatch\Dispatcher $d */
         $d = $i->nvoke('Dispatcher');
 
-        if (!$d->has($action)) {
+        if (!$d->has($action) || (is_string($action) && (!class_exists($action) && !$i->has($action)))) {
             $e->setError(Application::ERROR_DISPATCH_INVALID);
             $e->setType(Application::EVENT_DISPATCH_ERROR);
             $e->set('action', $action);

@@ -29,6 +29,7 @@ class DispatchInvalidAction extends AbstractAction
         $model = new ViewModel();
         $model->setTemplate($this->vm->getNotFoundTemplate());
         $model->setVariables([
+            'uri' => $_SERVER['REQUEST_URI'],
             'type' => 'action',
             'action' => $action,
         ]);
