@@ -24,26 +24,6 @@ final class RoutePlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    public function injectActions(ApplicationEvent $e)
-    {
-        $app = $e->getApplication();
-        $i = $app->getInjector();
-
-        /** @var \Spiffy\Dispatch\Dispatcher $dispatcher */
-        $d = $i->nvoke('Dispatcher');
-        foreach ($i['framework']['actions'] as $name => $spec) {
-            $d->add($name, function() use ($i, $d, $name, $spec) {
-                if (is_string($spec) && $i->has($spec)) {
-                    return $i->nvoke($spec);
-                }
-                return $spec;
-            });
-        }
-    }
-
-    /**
-     * @param \Spiffy\Framework\ApplicationEvent $e
-     */
     public function injectRoutesAndActions(ApplicationEvent $e)
     {
         $app = $e->getApplication();
@@ -62,7 +42,7 @@ final class RoutePlugin implements Plugin
             $action = $spec[1];
             $options = ['defaults' => ['action' => $action]];
 
-            $d->add($name, function() use ($i, $d, $action) {
+            $d->add($action, function() use ($i, $d, $action) {
                 if (is_string($action) && $i->has($action)) {
                     return $i->nvoke($action);
                 }
