@@ -141,7 +141,7 @@ final class BootstrapPlugin implements Plugin
             $vm->addStrategy(InjectorUtils::get($i, $strategy));
         }
 
-        $vm->setExceptionTemplate($config['exception_template']);
+        $vm->setErrorTemplate($config['error_template']);
         $vm->setNotFoundTemplate($config['not_found_template']);
 
         $app->events()->plug($vm);

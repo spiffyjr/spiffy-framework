@@ -155,7 +155,10 @@ final class DispatchPlugin implements Plugin
         $response = $e->getResponse();
         $response->setStatusCode(500);
 
-        $e->setDispatchResult($action($e->get('exception')));
+        $model = $action($e->get('exception'));
+
+        $e->setModel($model);
+        $e->setDispatchResult($model);
     }
 
     /**

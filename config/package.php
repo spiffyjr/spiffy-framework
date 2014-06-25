@@ -49,7 +49,7 @@ $config = [
             /*
              * The template for exceptions that are caught during the application's event life-cycle.
              */
-            'exception_template' => 'error/exception',
+            'error_template' => 'error/error',
 
             /*
              * The template for rendering 404's from invalid routes or actions.
@@ -63,7 +63,7 @@ $config = [
              */
             'strategies' => [
                 'spiffy.view.twig.twig-strategy',
-                'spiffy.view.json-strategy',
+                'spiffy.framework.view.json-strategy',
             ],
 
             /*

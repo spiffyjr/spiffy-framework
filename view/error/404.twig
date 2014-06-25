@@ -5,7 +5,5 @@
     <h1>404 <small>page not found</small></h1>
 </div>
 
-{% if type %}
-{% include 'error/404-' ~ type ~ '.twig' %}
-{% endif %}
+{% if type %}{% include 'error/404-' ~ type ~ '.twig' %}{% endif %}
 {% endblock content %}

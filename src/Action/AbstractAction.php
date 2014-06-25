@@ -33,6 +33,30 @@ abstract class AbstractAction implements ApplicationAction
     }
 
     /**
+     * @return boolean
+     */
+    final public function isPost()
+    {
+        return $this->getRequest()->getMethod() == 'POST';
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\ParameterBag
+     */
+    public function query()
+    {
+        return $this->getRequest()->query;
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\ParameterBag
+     */
+    final public function post()
+    {
+        return $this->getRequest()->request;
+    }
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
     final public function getRequest()

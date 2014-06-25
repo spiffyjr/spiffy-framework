@@ -9,12 +9,12 @@ use Spiffy\Framework\ApplicationEvent;
 use Spiffy\View\ViewStrategy;
 use Symfony\Component\HttpFoundation\Response;
 
-class ViewManager implements Plugin
+final class ViewManager implements Plugin
 {
     /**
      * @var string
      */
-    private $exceptionTemplate = 'error/exception';
+    private $errorTemplate = 'error/exception';
 
     /**
      * @var string
@@ -34,7 +34,7 @@ class ViewManager implements Plugin
     /**
      * @param ViewStrategy $fallbackStrategy
      */
-    final public function __construct(ViewStrategy $fallbackStrategy)
+    public function __construct(ViewStrategy $fallbackStrategy)
     {
         $this->fallbackStrategy = $fallbackStrategy;
     }
@@ -45,12 +45,19 @@ class ViewManager implements Plugin
     public function plug(Manager $events)
     {
         $events->on(Application::EVENT_RENDER, [$this, 'render'], -1000);
+
+        foreach ($this->strategies as $strategy) {
+            if (!$strategy instanceof Plugin) {
+                continue;
+            }
+            $events->plug($strategy);
+        }
     }
 
     /**
      * @param ViewStrategy $strategy
      */
-    final public function addStrategy(ViewStrategy $strategy)
+    public function addStrategy(ViewStrategy $strategy)
     {
         $this->strategies[] = $strategy;
     }
@@ -58,7 +65,7 @@ class ViewManager implements Plugin
     /**
      * @param ApplicationEvent $e
      */
-    final public function render(ApplicationEvent $e)
+    public function render(ApplicationEvent $e)
     {
         if ($e->getDispatchResult() instanceof Response) {
             return;
@@ -93,31 +100,31 @@ class ViewManager implements Plugin
     /**
      * @return \Spiffy\View\ViewStrategy
      */
-    final public function getFallbackStrategy()
+    public function getFallbackStrategy()
     {
         return $this->fallbackStrategy;
     }
 
     /**
-     * @param string $exceptionTemplate
+     * @param string $errorTemplate
      */
-    final public function setExceptionTemplate($exceptionTemplate)
+    public function setErrorTemplate($errorTemplate)
     {
-        $this->exceptionTemplate = $exceptionTemplate;
+        $this->errorTemplate = $errorTemplate;
     }
 
     /**
      * @return string
      */
-    final public function getExceptionTemplate()
+    public function getErrorTemplate()
     {
-        return $this->exceptionTemplate;
+        return $this->errorTemplate;
     }
 
     /**
      * @param string $notFoundTemplate
      */
-    final public function setNotFoundTemplate($notFoundTemplate)
+    public function setNotFoundTemplate($notFoundTemplate)
     {
         $this->notFoundTemplate = $notFoundTemplate;
     }
@@ -125,7 +132,7 @@ class ViewManager implements Plugin
     /**
      * @return string
      */
-    final public function getNotFoundTemplate()
+    public function getNotFoundTemplate()
     {
         return $this->notFoundTemplate;
     }
@@ -141,6 +148,6 @@ class ViewManager implements Plugin
         $e->set('exception', $ex);
         $e->getApplication()->events()->fire($e);
 
-        $e->getModel()->setTemplate($this->exceptionTemplate);
+        $e->getModel()->setTemplate($this->errorTemplate);
     }
 }

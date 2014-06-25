@@ -60,7 +60,7 @@ abstract class AbstractPluginTest extends \PHPUnit_Framework_TestCase
                 null
             ],
             'view_manager' => [
-                'exception_template' => '',
+                'error_template' => '',
                 'fallback_strategy' => 'Spiffy\View\VardumpStrategy',
                 'not_found_template' => '',
                 'strategies' => [

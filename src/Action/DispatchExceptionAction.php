@@ -35,9 +35,9 @@ class DispatchExceptionAction extends AbstractAction
         }
 
         $model = new ViewModel();
-        $model->setTemplate($this->vm->getExceptionTemplate());
+        $model->setTemplate($this->vm->getErrorTemplate());
         $model->setVariables([
-            'type' => 'dispatch',
+            'type' => 'exception',
             'exception_class' => get_class($exception),
             'exception' => $exception,
             'previous_exceptions' => $previous
