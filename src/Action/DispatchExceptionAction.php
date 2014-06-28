@@ -7,9 +7,7 @@ use Spiffy\View\ViewModel;
 
 class DispatchExceptionAction extends AbstractAction
 {
-    /**
-     * @var ViewManager
-     */
+    /** @var \Spiffy\Framework\View\ViewManager  */
     private $vm;
 
     /**

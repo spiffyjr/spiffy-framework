@@ -64,6 +64,7 @@ final class DispatchPlugin implements Plugin
         try {
             $match->set('__dispatcher', $d);
             $match->set('__event', $e);
+            $match->set('__router', $i->nvoke('Router'));
 
             $e->setDispatchResult($d->ispatch($action, $match->getParams()));
             $this->finish($e);

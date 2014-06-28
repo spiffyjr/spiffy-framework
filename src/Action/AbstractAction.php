@@ -4,15 +4,23 @@ namespace Spiffy\Framework\Action;
 
 use Spiffy\Framework\ApplicationEventAwareTrait;
 use Spiffy\Inject\InjectorAwareTrait;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class AbstractAction implements ApplicationAction
 {
     use ApplicationEventAwareTrait;
 
     /**
+     * Set during dispatching from the __router param.
+     *
+     * @var \Spiffy\Route\Router
+     */
+    private $router;
+
+    /**
      * {@inheritDoc}
      */
-    public function dispatch(array $params)
+    final public function dispatch(array $params)
     {
         if (!isset($params['__dispatcher']) || !isset($params['__event'])) {
             throw new Exception\DispatchingErrorException(
@@ -26,10 +34,32 @@ abstract class AbstractAction implements ApplicationAction
         /** @var \Spiffy\Framework\ApplicationEvent $e */
         $e = $params['__event'];
 
+        $this->router = $params['__router'];
+
         $e->set('__action', get_called_class());
 
         $this->setApplicationEvent($e);
         return $d->dispatchInvokable($this, $params);
+    }
+
+    /**
+     * @param string $name
+     * @param array $params
+     * @return string
+     */
+    final public function generateRoute($name, array $params = [])
+    {
+        return $this->router->assemble($name, $params);
+    }
+
+    /**
+     * @param string $uri
+     * @param int $status
+     * @return RedirectResponse
+     */
+    final public function redirect($uri, $status = 302)
+    {
+        return new RedirectResponse($uri, $status);
     }
 
     /**
@@ -43,7 +73,7 @@ abstract class AbstractAction implements ApplicationAction
     /**
      * @return \Symfony\Component\HttpFoundation\ParameterBag
      */
-    public function query()
+    final public function query()
     {
         return $this->getRequest()->query;
     }
