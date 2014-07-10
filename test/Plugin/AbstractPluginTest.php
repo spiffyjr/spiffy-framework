@@ -4,7 +4,11 @@ namespace Spiffy\Framework\Plugin;
 
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
+use Spiffy\Framework\View\ViewManager;
 use Spiffy\Package\PackageManager;
+use Spiffy\Route\Router;
+use Spiffy\View\VardumpStrategy;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractPluginTest extends \PHPUnit_Framework_TestCase
 {
@@ -71,7 +75,7 @@ abstract class AbstractPluginTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->event = $event = new ApplicationEvent($app);
+        $this->event = $app->getEvent();
         $this->p = $this->createPlugin();
     }
 }

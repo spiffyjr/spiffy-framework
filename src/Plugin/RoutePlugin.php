@@ -23,6 +23,7 @@ final class RoutePlugin implements Plugin
 
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
+     * @throws Exception\MissingActionException
      */
     public function injectRoutesAndActions(ApplicationEvent $e)
     {
@@ -39,6 +40,13 @@ final class RoutePlugin implements Plugin
         $d = $i->nvoke('Dispatcher');
 
         foreach ($routes as $name => $spec) {
+            if (!isset($spec[1])) {
+                throw new Exception\MissingActionException(sprintf(
+                    'No action was given for route "%s"',
+                    $name
+                ));
+            }
+            
             $action = $spec[1];
             $options = ['defaults' => ['action' => $action]];
 
@@ -97,7 +105,7 @@ final class RoutePlugin implements Plugin
         }
 
         $i = $e->getApplication()->getInjector();
-        $action = new InvalidRouteAction($i->nvoke('ViewManager'));
+        $action = new InvalidRouteAction($i->nvoke('ViewManager'), $i->nvoke('Request'));
 
         $response = $e->getResponse();
         $response->setStatusCode(404);

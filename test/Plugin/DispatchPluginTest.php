@@ -5,8 +5,14 @@ namespace Spiffy\Framework\Plugin;
 use Spiffy\Dispatch\Dispatcher;
 use Spiffy\Event\EventManager;
 use Spiffy\Framework\Application;
+use Spiffy\Framework\View\ViewManager;
 use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
+use Spiffy\Route\Router;
+use Spiffy\View\VardumpStrategy;
+use Spiffy\View\ViewModel;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @coversDefaultClass \Spiffy\Framework\Plugin\DispatchPlugin
@@ -31,19 +37,46 @@ class DispatchPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::injectActions
+     * @covers ::handleDispatchInvalidResult
      */
-    public function testInjectActions()
+    public function testDispatchInvalidResultReturnsWithProperResponse()
+    {
+        $event = clone $this->event;
+        
+        $p = $this->p;
+        
+        $event->setModel(new ViewModel());
+        $this->assertNull($p->handleDispatchInvalidResult($event));
+
+        $event = clone $this->event;
+        $event->setDispatchResult(new Response());
+        $this->assertNull($p->handleDispatchInvalidResult($event));
+
+        $event = clone $this->event;
+        $event->setDispatchResult(new ViewModel());
+        $this->assertNull($p->handleDispatchInvalidResult($event));
+    }
+
+    /**
+     * @covers ::handleDispatchInvalidResult
+     */
+    public function testDispatchInvalidResult()
     {
         $p = $this->p;
-        $i = $this->app->getInjector();
-        $d = new Dispatcher();
-        $i->nject('Dispatcher', $d);
-
-        $p->injectActions($this->event);
-
-        $this->assertTrue($d->has('test'));
-        $this->assertSame('Spiffy\Framework\TestAsset\TestAction', $d->get('test'));
+        $event = $this->event;
+        $event->setDispatchResult('not valid');
+     
+        $p->handleDispatchInvalidResult($event);
+        
+        $result = new ViewModel([
+            'type' => 'invalid-result',
+            'result' => 'not valid'
+        ]);
+        $result->setTemplate('error/exception');
+        
+        $this->assertInstanceOf('Spiffy\View\ViewModel', $event->getDispatchResult());
+        $this->assertEquals($result, $event->getDispatchResult());
+        $this->assertSame(500, $event->getResponse()->getStatusCode());
     }
 
     /**
@@ -81,11 +114,15 @@ class DispatchPluginTest extends AbstractPluginTest
         $this->assertSame(Application::ERROR_DISPATCH_INVALID, $event->getError());
         $this->assertSame(Application::EVENT_DISPATCH_ERROR, $event->getType());
 
-        $this->app->events()->on(Application::EVENT_DISPATCH_ERROR, function ($e) {
-            return 'fired';
-        });
+        $result = new ViewModel([
+            'uri' => '/',
+            'type' => 'action',
+            'action' => 'exception'
+        ]);
+        $result->setTemplate('error/404');
+        
         $p->dispatch($event);
-        $this->assertSame('fired', $event->getDispatchResult());
+        $this->assertEquals($result, $event->getDispatchResult());
     }
 
 
@@ -115,27 +152,30 @@ class DispatchPluginTest extends AbstractPluginTest
         $this->assertSame(Application::EVENT_DISPATCH_ERROR, $event->getType());
         $this->assertInstanceOf('RuntimeException', $event->get('exception'));
 
-        $this->app->events()->on(Application::EVENT_DISPATCH_ERROR, function ($e) {
-            return 'fired';
-        });
+        $result = new ViewModel([
+            'type' => 'exception',
+            'exception_class' => 'RuntimeException',
+            'exception' => $event->get('exception'),
+            'previous_exceptions' => []
+        ]);
+        $result->setTemplate('error/exception');
+        
         $p->dispatch($event);
-        $this->assertSame('fired', $event->getDispatchResult());
+        $this->assertEquals($result, $event->getDispatchResult());
     }
 
     /**
      * @covers ::dispatch, ::finish
      */
-    public function testDispatch()
+    public function testDispatchArrayResult()
     {
         $p = $this->p;
         $event = $this->event;
 
-        $i = $this->app->getInjector();
         $d = new Dispatcher();
         $d->add('test', 'Spiffy\Framework\TestAsset\TestAction');
-        $d->add('model', 'Spiffy\Framework\TestAsset\ModelAction');
-        $d->add('response', 'Spiffy\Framework\TestAsset\ResponseAction');
 
+        $i = $this->app->getInjector();
         $i->nject('Dispatcher', $d);
 
         // array result
@@ -147,8 +187,23 @@ class DispatchPluginTest extends AbstractPluginTest
 
         $this->assertFalse($event->hasError());
         $this->assertSame(['foo' => 'bar'], $event->getDispatchResult());
+    }
 
-        // model result
+    /**
+     * @covers ::dispatch, ::finish
+     */
+    public function testDispatchModelResult()
+    {
+        $p = $this->p;
+        $event = $this->event;
+
+        $d = new Dispatcher();
+        $d->add('model', 'Spiffy\Framework\TestAsset\ModelAction');
+
+        $i = $this->app->getInjector();
+        $i->nject('Dispatcher', $d);
+
+        // array result
         $match = new RouteMatch(new Route('model', '/model'));
         $match->set('action', 'model');
 
@@ -158,8 +213,23 @@ class DispatchPluginTest extends AbstractPluginTest
         $this->assertFalse($event->hasError());
         $this->assertInstanceOf('Spiffy\View\ViewModel', $event->getDispatchResult());
         $this->assertSame($event->getDispatchResult(), $event->getModel());
+    }
 
-        // response result
+    /**
+     * @covers ::dispatch, ::finish
+     */
+    public function testDispatchResponseResult()
+    {
+        $p = $this->p;
+        $event = $this->event;
+
+        $d = new Dispatcher();
+        $d->add('response', 'Spiffy\Framework\TestAsset\ResponseAction');
+
+        $i = $this->app->getInjector();
+        $i->nject('Dispatcher', $d);
+
+        // array result
         $match = new RouteMatch(new Route('response', '/response'));
         $match->set('action', 'response');
 
@@ -213,5 +283,14 @@ class DispatchPluginTest extends AbstractPluginTest
     protected function createPlugin()
     {
         return new DispatchPlugin();
+    }
+    
+    protected function setUp()
+    {
+        parent::setUp();
+        $i = $this->app->getInjector();
+        $i->nject('Request', new Request());
+        $i->nject('Router', new Router());
+        $i->nject('ViewManager', new ViewManager(new VardumpStrategy()));
     }
 }

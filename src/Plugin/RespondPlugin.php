@@ -24,7 +24,7 @@ final class RespondPlugin implements Plugin
      */
     public function respond(ApplicationEvent $e)
     {
-        $response = ($e->getResponse() instanceof Response) ? $e->getResponse() : new Response();
+        $response = $e->getResponse();
 
         if (!$response->getContent() && $e->getRenderResult()) {
             $response->setContent($e->getRenderResult());

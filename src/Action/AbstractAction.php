@@ -22,9 +22,9 @@ abstract class AbstractAction implements ApplicationAction
      */
     final public function dispatch(array $params)
     {
-        if (!isset($params['__dispatcher']) || !isset($params['__event'])) {
+        if (!isset($params['__dispatcher']) || !isset($params['__event']) || !isset($params['__router'])) {
             throw new Exception\DispatchingErrorException(
-                'dispatch() expects __dispatcher and __event params to be available.'
+                'dispatch() expects __dispatcher, __event and __router params to be available.'
             );
         }
 
@@ -35,8 +35,6 @@ abstract class AbstractAction implements ApplicationAction
         $e = $params['__event'];
 
         $this->router = $params['__router'];
-
-        $e->set('__action', get_called_class());
 
         $this->setApplicationEvent($e);
         return $d->dispatchInvokable($this, $params);
