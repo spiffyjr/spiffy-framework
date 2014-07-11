@@ -62,7 +62,7 @@ final class RenderPlugin implements Plugin
             return;
         }
 
-        $replace = function($match) {
+        $replace = function ($match) {
             return $match[1] . '-' . $match[2];
         };
 

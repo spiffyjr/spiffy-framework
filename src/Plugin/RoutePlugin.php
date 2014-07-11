@@ -50,7 +50,7 @@ final class RoutePlugin implements Plugin
             $action = $spec[1];
             $options = ['defaults' => ['action' => $action]];
 
-            $d->add($action, function() use ($i, $d, $action) {
+            $d->add($action, function () use ($i, $d, $action) {
                 if (is_string($action) && $i->has($action)) {
                     return $i->nvoke($action);
                 }
