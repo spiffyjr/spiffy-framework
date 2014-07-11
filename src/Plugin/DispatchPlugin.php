@@ -108,16 +108,16 @@ final class DispatchPlugin implements Plugin
     public function handleDispatchInvalidResult(ApplicationEvent $e)
     {
         $result = $e->getDispatchResult();
-        
+
         // generally created from arrays or null values via other events
         if ($e->getModel()) {
             return;
         }
-        
+
         if ($result instanceof Model) {
             return;
         }
-        
+
         // dispatch returned response for short-circuit
         if ($result instanceof Response) {
             return;

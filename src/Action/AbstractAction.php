@@ -3,7 +3,6 @@
 namespace Spiffy\Framework\Action;
 
 use Spiffy\Framework\ApplicationEventAwareTrait;
-use Spiffy\Inject\InjectorAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class AbstractAction implements ApplicationAction

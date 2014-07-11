@@ -6,6 +6,7 @@ interface ApplicationEventAware
 {
     /**
      * @param \Spiffy\Framework\ApplicationEvent $applicationEvent
+     * @return void
      */
     public function setApplicationEvent(ApplicationEvent $applicationEvent);
 
