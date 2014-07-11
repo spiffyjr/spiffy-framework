@@ -33,7 +33,7 @@
                 "test/"
             ],
             "Spiffy\\Framework\\TestAsset\\TestPackage\\": [
-                "test/TestPackage/src"
+                "test/TestAsset/TestPackage/src"
             ]
         }
     },
