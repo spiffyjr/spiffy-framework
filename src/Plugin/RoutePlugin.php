@@ -46,7 +46,7 @@ final class RoutePlugin implements Plugin
                     $name
                 ));
             }
-            
+
             $action = $spec[1];
             $options = ['defaults' => ['action' => $action]];
 

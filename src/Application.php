@@ -6,7 +6,6 @@ use Spiffy\Event\EventsAwareTrait;
 use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
 use Spiffy\Inject\InjectorUtils;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 final class Application
 {
