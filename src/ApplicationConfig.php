@@ -2,7 +2,7 @@
 
 namespace Spiffy\Framework;
 
-class ApplicationConfig
+final class ApplicationConfig
 {
     /**
      * @var array
@@ -12,7 +12,7 @@ class ApplicationConfig
     /**
      * @param array $config
      */
-    final public function __construct(array $config = [])
+    public function __construct(array $config = [])
     {
         $defaults = [
             'config_override_flags' => 0,
@@ -34,7 +34,7 @@ class ApplicationConfig
     /**
      * @return int
      */
-    final public function getConfigOverrideFlags()
+    public function getConfigOverrideFlags()
     {
         return $this->config['config_override_flags'];
     }
@@ -43,7 +43,7 @@ class ApplicationConfig
     /**
      * @return string
      */
-    final public function getConfigOverridePattern()
+    public function getConfigOverridePattern()
     {
         return $this->config['config_override_pattern'];
     }
@@ -51,7 +51,7 @@ class ApplicationConfig
     /**
      * @return array
      */
-    final public function getEnvironment()
+    public function getEnvironment()
     {
         return $this->config['environment'];
     }
@@ -59,7 +59,7 @@ class ApplicationConfig
     /**
      * @return array
      */
-    final public function getPackages()
+    public function getPackages()
     {
         return $this->config['packages'];
     }
@@ -67,7 +67,7 @@ class ApplicationConfig
     /**
      * @return array
      */
-    final public function getPlugins()
+    public function getPlugins()
     {
         return $this->config['plugins'];
     }
@@ -75,7 +75,7 @@ class ApplicationConfig
     /**
      * @return array
      */
-    final public function isDebug()
+    public function isDebug()
     {
         return $this->config['environment']['debug'];
     }
