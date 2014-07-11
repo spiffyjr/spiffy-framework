@@ -138,6 +138,14 @@ final class ViewManager implements Plugin
     }
 
     /**
+     * @return \Spiffy\View\ViewStrategy[]
+     */
+    public function getStrategies()
+    {
+        return $this->strategies;
+    }
+
+    /**
      * @param \Exception $ex
      * @param ApplicationEvent $e
      */

@@ -18,7 +18,7 @@ final class ConsoleApplication extends BaseConsoleApplication
     /**
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $this->application = new Application($config);
 

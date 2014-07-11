@@ -31,6 +31,9 @@
             "Spiffy\\Framework\\": [
                 "src/",
                 "test/"
+            ],
+            "Spiffy\\Framework\\TestAsset\\TestPackage\\": [
+                "test/TestPackage/src"
             ]
         }
     },

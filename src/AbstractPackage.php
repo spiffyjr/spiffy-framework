@@ -52,10 +52,6 @@ abstract class AbstractPackage implements ApplicationPackage
             $newClasses = get_declared_classes();
 
             foreach (array_diff($newClasses, $classes) as $className) {
-                if ($className == 'Spiffy\Mvc\ConsoleCommand') {
-                    continue;
-                }
-
                 $refl = new \ReflectionClass($className);
                 if ($refl->isAbstract()) {
                     continue;
@@ -130,7 +126,10 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getConfig()
     {
         $path = $this->getPath();
-        return file_exists($path . '/config/package.php') ? include $path . '/config/package.php' : [];
+        if (!file_exists($path . '/config/package.php')) {
+            return [];
+        }
+        return include $path . '/config/package.php';
     }
 
     /**
@@ -139,7 +138,10 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getRoutes()
     {
         $path = $this->getPath();
-        return file_exists($path . '/config/routes.php') ? include $path . '/config/routes.php' : [];
+        if (!file_exists($path . '/config/routes.php')) {
+            return [];
+        }
+        return include $path . '/config/routes.php';
     }
 
     /**
@@ -148,6 +150,9 @@ abstract class AbstractPackage implements ApplicationPackage
     public function getServices()
     {
         $path = $this->getPath();
-        return file_exists($path . '/config/services.php') ? include $path . '/config/services.php' : [];
+        if (!file_exists($path . '/config/services.php')) {
+            return [];
+        }
+        return include $path . '/config/services.php';
     }
 }
