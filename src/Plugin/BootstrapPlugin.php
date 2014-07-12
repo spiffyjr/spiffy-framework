@@ -62,7 +62,6 @@ final class BootstrapPlugin implements Plugin
             }
             $app->events()->plug(InjectorUtils::get($i, $plugin));
         }
-        exit;
     }
 
     /**
