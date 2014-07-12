@@ -137,14 +137,21 @@ class BootstrapPluginTest extends AbstractPluginTest
     public function testCreatePackageManagerHandlesDebugPackages()
     {
         $p = $this->p;
-        $app = new Application(['environment' => ['debug' => true], 'packages' => ['?Spiffy\Package\TestAsset\Application']]);
+        $app = new Application([
+            'environment' => [
+                'debug' => true
+            ],
+            'packages' => [
+                '?Spiffy\Package\TestAsset\Application'
+            ]
+        ]);
         $event = new ApplicationEvent($app);
 
         $p->createPackageManager($event);
 
         $pm = $app->getInjector()->nvoke('PackageManager');
         $this->assertInstanceOf('Spiffy\Package\PackageManager', $pm);
-        $this->assertCount(1, $pm->getPackages());
+        $this->assertCount(2, $pm->getPackages());
 
         $app = new Application(['packages' => ['?Spiffy\Package\TestAsset\Application']]);
         $event = new ApplicationEvent($app);
@@ -153,7 +160,7 @@ class BootstrapPluginTest extends AbstractPluginTest
 
         $pm = $app->getInjector()->nvoke('PackageManager');
         $this->assertInstanceOf('Spiffy\Package\PackageManager', $pm);
-        $this->assertCount(2, $pm->getPackages());
+        $this->assertCount(1, $pm->getPackages());
     }
 
     /**

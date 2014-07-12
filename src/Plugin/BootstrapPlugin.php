@@ -164,7 +164,7 @@ final class BootstrapPlugin implements Plugin
         $pm->add('Spiffy\\Framework');
         foreach ($appConfig->getPackages() as $package) {
             if ($package[0] == '?') {
-                if ($app->isDebug()) {
+                if (!$app->isDebug()) {
                     continue;
                 }
                 $package = substr($package, 1);
