@@ -57,7 +57,7 @@ final class RenderPlugin implements Plugin
             return;
         }
 
-        $action = $e->getAction();
+        $action = $e->get('__dispatched_class');
         if (!$action) {
             return;
         }

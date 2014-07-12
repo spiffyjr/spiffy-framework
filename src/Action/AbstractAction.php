@@ -32,6 +32,7 @@ abstract class AbstractAction implements ApplicationAction
 
         /** @var \Spiffy\Framework\ApplicationEvent $e */
         $e = $params['__event'];
+        $e->set('__dispatched_class', get_called_class());
 
         $this->router = $params['__router'];
 

@@ -80,7 +80,7 @@ class RenderPluginTest extends AbstractPluginTest
         $event->setModel($model);
         $this->assertNull($p->injectTemplate($event));
 
-        $event->setAction('My\Class\IsCoolAction');
+        $event->set('__dispatched_class', 'My\Class\IsCoolAction');
         $p->injectTemplate($event);
         
         $this->assertSame('my/class/is-cool', $model->getTemplate());
