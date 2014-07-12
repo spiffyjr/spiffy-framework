@@ -24,9 +24,9 @@ final class BootstrapPlugin implements Plugin
     {
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectEnvironment'], 1000);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createPackageManager'], 900);
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectApplicationPackageConfigs'], 800);
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectPlugins'], 700);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectApplicationPackageConfigs'], 800);        
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectServices'], 600);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectPlugins'], 500);
 
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createDispatcher']);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createRequest']);
@@ -60,9 +60,9 @@ final class BootstrapPlugin implements Plugin
             if (empty($plugin)) {
                 continue;
             }
-
             $app->events()->plug(InjectorUtils::get($i, $plugin));
         }
+        exit;
     }
 
     /**
@@ -72,7 +72,7 @@ final class BootstrapPlugin implements Plugin
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
-
+        
         foreach ($i['framework']['services'] as $name => $spec) {
             if (empty($spec)) {
                 continue;
