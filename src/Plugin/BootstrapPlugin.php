@@ -24,7 +24,7 @@ final class BootstrapPlugin implements Plugin
     {
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectEnvironment'], 1000);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createPackageManager'], 900);
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectApplicationPackageConfigs'], 800);        
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectApplicationPackageConfigs'], 800);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectServices'], 600);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectPlugins'], 500);
 
