@@ -157,7 +157,12 @@ final class BootstrapPlugin implements Plugin
         $i = $app->getInjector();
         $appConfig = $app->getConfig();
 
-        $pm = new PackageManager($appConfig->getConfigOverridePattern(), $appConfig->getConfigOverrideFlags());
+        $pm = new PackageManager(
+            $appConfig->getConfigOverridePattern(),
+            $appConfig->getConfigOverrideFlags(),
+            $appConfig->getPackageConfigCache()
+        );
+        
         $pm->events()->plug(new PackageManagerPlugin($appConfig));
 
         $pm->add('Spiffy\\Framework');

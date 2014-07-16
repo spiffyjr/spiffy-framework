@@ -19,6 +19,7 @@ final class ApplicationConfig
             'config_override_pattern' => 'config/override/*.config.php',
             'environment' => ['debug' => false],
             'packages' => [],
+            'package_config_cache' => null,
             'plugins' => [
                 'bootstrap' => 'Spiffy\Framework\Plugin\BootstrapPlugin',
                 'dispatch' => 'Spiffy\Framework\Plugin\DispatchPlugin',
@@ -54,6 +55,14 @@ final class ApplicationConfig
     public function getEnvironment()
     {
         return $this->config['environment'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackageConfigCache()
+    {
+        return $this->config['package_config_cache'];
     }
 
     /**
