@@ -18,3 +18,8 @@ Spiffy\Framework can be installed using composer which will setup any autoloadin
 `composer require spiffy/spiffy-framework`
 
 Additionally, you can download or clone the repository and setup your own autoloading.
+
+## Credits
+
+* The idea of actions were primarily inspired by @pmjones and [his ADR: A Tentative MVC Refinement](http://paul-m-jones.com/archives/5970) post.
+* The core application architecture is heavily inspired by ZF2's MVC layer.
