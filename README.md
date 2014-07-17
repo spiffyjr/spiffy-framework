@@ -21,5 +21,5 @@ Additionally, you can download or clone the repository and setup your own autolo
 
 ## Credits
 
-* The idea of actions were primarily inspired by [@pmjones](http://twitter.com/pmjones) and [his ADR: A Tentative MVC Refinement](http://paul-m-jones.com/archives/5970) post.
+* Actions were primarily inspired by [@pmjones](http://twitter.com/pmjones) and [his ADR: A Tentative MVC Refinement](http://paul-m-jones.com/archives/5970) post.
 * The core application architecture is heavily inspired by [ZF2's MVC layer](https://github.com/zendframework/zf2/tree/master/library/Zend/Mvc).
