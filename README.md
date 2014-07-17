@@ -19,6 +19,12 @@ Spiffy\Framework can be installed using composer which will setup any autoloadin
 
 Additionally, you can download or clone the repository and setup your own autoloading.
 
+## Documentation
+
+> Dammit man, I'm a programmer, not an English major!
+
+The individual components (see above) are mostly documented but the core framework has not yet been documented. I'll be making this a priority when I have the time.
+
 ## Credits
 
 * Actions were primarily inspired by [@pmjones](http://twitter.com/pmjones) and [his ADR: A Tentative MVC Refinement](http://paul-m-jones.com/archives/5970) post.
