@@ -11,7 +11,8 @@ class ApplicationConfigTest extends \PHPUnit_Framework_TestCase
     protected $c;
     
     /**
-     * @covers ::__construct, ::getConfigOverrideFlags
+     * @covers ::__construct
+     * @covers ::getConfigOverrideFlags
      */
     public function testGetConfigOverrideFlags()
     {

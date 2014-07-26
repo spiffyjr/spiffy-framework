@@ -13,4 +13,12 @@ class Package extends AbstractPackage
     {
         return __DIR__;
     }
+
+    /**
+     * @return bool|void
+     */
+    public function isAutoloadServicesEnabled()
+    {
+        return true;
+    }
 }

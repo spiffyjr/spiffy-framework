@@ -33,7 +33,7 @@ final class BootstrapPlugin implements Plugin
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createRouter']);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createViewManager']);
 
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'bootstrapApplicatonPackages'], -1000);
+        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'bootstrapApplicationPackages'], -1000);
     }
 
     /**
@@ -100,7 +100,7 @@ final class BootstrapPlugin implements Plugin
     /**
      * @param \Spiffy\Framework\ApplicationEvent $e
      */
-    public function bootstrapApplicatonPackages(ApplicationEvent $e)
+    public function bootstrapApplicationPackages(ApplicationEvent $e)
     {
         $pm = $e->getApplication()->getInjector()->nvoke('PackageManager');
 
@@ -163,7 +163,10 @@ final class BootstrapPlugin implements Plugin
             $appConfig->getPackageConfigCache()
         );
         
-        $pm->events()->plug(new PackageManagerPlugin($appConfig));
+        // todo: interface for package manager plugins?
+        foreach ($appConfig->getPackageManagerPlugins() as $plugin) {
+            $pm->events()->plug(new $plugin());
+        }
 
         $pm->add('Spiffy\\Framework');
         foreach ($appConfig->getPackages() as $package) {

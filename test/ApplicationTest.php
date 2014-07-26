@@ -17,7 +17,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     protected $a;
 
     /**
-     * @covers ::__construct, ::isDebug
+     * @covers ::__construct
+     * @covers ::isDebug
      */
     public function testIsDebug()
     {
@@ -73,7 +74,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::events, ::attachDefaultPlugins
+     * @covers ::events
+     * @covers ::attachDefaultPlugins
      */
     public function testAttachingDefaultPlugins()
     {

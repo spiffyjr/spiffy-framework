@@ -17,7 +17,7 @@ class BootstrapConsolePluginTest extends AbstractPluginTest
     protected $p;
 
     /**
-     * @covers ::plug, ::__construct
+     * Generator ::__construct
      */
     public function testPlug()
     {

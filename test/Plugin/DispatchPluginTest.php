@@ -91,7 +91,9 @@ class DispatchPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::dispatch, ::invalidAction, ::finish
+     * @covers ::dispatch
+     * @covers ::handleDispatchInvalid
+     * @covers ::finish
      */
     public function testDispatchWithNoAction()
     {
@@ -127,7 +129,9 @@ class DispatchPluginTest extends AbstractPluginTest
 
 
     /**
-     * @covers ::dispatch, ::actionException, ::finish
+     * @covers ::dispatch
+     * @covers ::handleDispatchException
+     * @covers ::finish
      */
     public function testDispatchHandlesActionExceptions()
     {
@@ -165,7 +169,25 @@ class DispatchPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::dispatch, ::finish
+     * @covers ::handleDispatchInvalid
+     */
+    public function testHandleDispatchInvalidWithWrongError()
+    {
+        $p = $this->p;
+        $this->assertNull($p->handleDispatchInvalid($this->event));
+    }
+
+    /**
+     * @covers ::handleDispatchException
+     */
+    public function testHandleDispatchExceptionWithWrongError()
+    {
+        $p = $this->p;
+        $this->assertNull($p->handleDispatchException($this->event));
+    }
+
+    /**
+     * Generator ::finish
      */
     public function testDispatchArrayResult()
     {
@@ -190,7 +212,7 @@ class DispatchPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::dispatch, ::finish
+     * Generator ::finish
      */
     public function testDispatchModelResult()
     {
@@ -216,7 +238,7 @@ class DispatchPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::dispatch, ::finish
+     * Generator ::finish
      */
     public function testDispatchResponseResult()
     {

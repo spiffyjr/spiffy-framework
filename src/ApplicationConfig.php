@@ -4,9 +4,7 @@ namespace Spiffy\Framework;
 
 final class ApplicationConfig
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $config;
 
     /**
@@ -20,6 +18,10 @@ final class ApplicationConfig
             'environment' => ['debug' => false],
             'packages' => [],
             'package_config_cache' => null,
+            'package_manager_plugins' => [
+                'merge_application_config' => 'Spiffy\Framework\Plugin\PackageManager\MergeApplicationConfigPlugin',
+                'merged_annotated_services' => 'Spiffy\Framework\Plugin\PackageManager\MergeAnnotatedServicesPlugin'
+            ],
             'plugins' => [
                 'bootstrap' => 'Spiffy\Framework\Plugin\BootstrapPlugin',
                 'dispatch' => 'Spiffy\Framework\Plugin\DispatchPlugin',
@@ -30,6 +32,14 @@ final class ApplicationConfig
         ];
 
         $this->config = array_replace_recursive($defaults, $config);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPackageManagerPlugins()
+    {
+        return $this->config['package_manager_plugins'];
     }
 
     /**

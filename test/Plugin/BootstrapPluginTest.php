@@ -79,12 +79,12 @@ class BootstrapPluginTest extends AbstractPluginTest
     }
 
     /**
-     * @covers ::bootstrapApplicatonPackages
+     * @covers ::bootstrapApplicationPackages
      */
     public function testBootstrapApplicationPackages()
     {
         $p = $this->p;
-        $p->bootstrapApplicatonPackages($this->event);
+        $p->bootstrapApplicationPackages($this->event);
 
         $this->assertTrue($_ENV['bootstrap']);
     }

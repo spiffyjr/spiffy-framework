@@ -12,7 +12,8 @@ use Spiffy\View\ViewModel;
 class RenderExceptionActionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::__construct, ::__invoke
+     * @covers ::__construct
+     * @covers ::__invoke
      */
     public function testInvoke()
     {

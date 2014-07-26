@@ -14,7 +14,10 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
     protected $a;
 
     /**
-     * @covers ::add, ::__construct, ::getInjector, ::getApplication
+     * @covers ::add
+     * @covers ::__construct
+     * @covers ::getInjector
+     * @covers ::getApplication
      */
     public function testAddInjectsInjector()
     {

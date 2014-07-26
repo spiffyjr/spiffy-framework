@@ -6,4 +6,11 @@ use Spiffy\Framework\AbstractPackage;
 
 class Package extends AbstractPackage
 {
+    /**
+     * @return bool|void
+     */
+    public function isAutoloadServicesEnabled()
+    {
+        return true;
+    }
 }

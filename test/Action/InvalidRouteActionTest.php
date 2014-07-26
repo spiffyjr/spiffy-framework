@@ -13,7 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 class InvalidRouteActionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::__construct, ::__invoke
+     * @covers ::__construct
+     * @covers ::__invoke
      */
     public function testInvoke()
     {

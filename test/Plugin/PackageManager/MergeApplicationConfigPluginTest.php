@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Framework\Plugin;
+namespace Spiffy\Framework\Plugin\PackageManager;
 
 use Spiffy\Event\Event;
 use Spiffy\Event\EventManager;
@@ -8,17 +8,15 @@ use Spiffy\Framework\ApplicationConfig;
 use Spiffy\Package\PackageManager;
 
 /**
- * @coversDefaultClass \Spiffy\Framework\Plugin\PackageManagerPlugin
+ * @coversDefaultClass \Spiffy\Framework\Plugin\PackageManager\MergeApplicationConfigPlugin
  */
 class PackageManagerPluginTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Spiffy\Framework\Plugin\PackageManagerPlugin
-     */
+    /** @var \Spiffy\Framework\Plugin\PackageManager\MergeApplicationConfigPlugin */
     protected $p;
 
     /**
-     * @covers ::plug, ::__construct
+     * @covers ::plug
      */
     public function testPlug()
     {
@@ -49,15 +47,12 @@ class PackageManagerPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($result));
         $this->assertSame(
             $result['framework']['routes'],
-            include __DIR__ . '/../TestAsset/ApplicationPackage/config/routes.php'
+            include __DIR__ . '/../../TestAsset/ApplicationPackage/config/routes.php'
         );
     }
-    
-    /**
-     * @return \Spiffy\Event\Plugin|PackageManagerPlugin
-     */
+
     protected function setUp()
     {
-        $this->p = new PackageManagerPlugin(new ApplicationConfig());
+        $this->p = new MergeApplicationConfigPlugin(new ApplicationConfig());
     }
 }

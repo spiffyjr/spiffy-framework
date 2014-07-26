@@ -20,7 +20,9 @@ class ApplicationEventTest extends \PHPUnit_Framework_TestCase
     protected $e;
     
     /**
-     * @covers ::getError, ::setError, ::hasError
+     * @covers ::getError
+     * @covers ::setError
+     * @covers ::hasError
      */
     public function testSetGetHasError()
     {

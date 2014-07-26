@@ -1,29 +1,15 @@
 <?php
 
-namespace Spiffy\Framework\Plugin;
+namespace Spiffy\Framework\Plugin\PackageManager;
 
 use Spiffy\Event\Event;
 use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
-use Spiffy\Framework\ApplicationConfig;
 use Spiffy\Framework\ApplicationPackage;
 use Spiffy\Package\PackageManager;
 
-final class PackageManagerPlugin implements Plugin
+final class MergeApplicationConfigPlugin implements Plugin
 {
-    /**
-     * @var \Spiffy\Framework\ApplicationConfig
-     */
-    private $config;
-
-    /**
-     * @param ApplicationConfig $config
-     */
-    public function __construct(ApplicationConfig $config)
-    {
-        $this->config = $config;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -44,7 +30,6 @@ final class PackageManagerPlugin implements Plugin
 
         $config = [
             'framework' => [
-                'actions' => [],
                 'routes' => [],
                 'services' => [],
             ]

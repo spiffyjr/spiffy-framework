@@ -19,6 +19,11 @@ interface ApplicationPackage extends ConfigProvider
     public function bootstrapConsole(ConsoleApplication $app);
 
     /**
+     * @return bool
+     */
+    public function isAutoloadServicesEnabled();
+
+    /**
      * @return string
      */
     public function getName();

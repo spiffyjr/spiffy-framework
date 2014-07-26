@@ -30,6 +30,14 @@ abstract class AbstractPackage implements ApplicationPackage
     }
 
     /**
+     * @return bool|void
+     */
+    public function isAutoloadServicesEnabled()
+    {
+        return false;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function bootstrapConsole(ConsoleApplication $console)

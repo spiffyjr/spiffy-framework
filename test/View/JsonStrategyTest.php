@@ -14,7 +14,9 @@ use Spiffy\View\JsonStrategy as BaseJsonStrategy;
 class JsonStrategyTest extends \PHPUnit_Framework_TestCase 
 {
     /**
-     * @covers ::__construct, ::canRender, ::render
+     * @covers ::__construct
+     * @covers ::canRender
+     * @covers ::render
      */
     public function testProxiesToCompositeStrategy()
     {

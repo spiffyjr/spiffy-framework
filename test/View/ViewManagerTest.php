@@ -25,7 +25,7 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
     protected $vm;
 
     /**
-     * @covers ::__construct, ::plug
+     * Generator ::plug
      */
     public function testPlug()
     {
@@ -38,7 +38,7 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::addStrategy, ::getStrategies
+     * Generator ::getStrategies
      */
     public function testAddStrategy()
     {
@@ -81,7 +81,7 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::render, ::renderException
+     * Generator ::renderException
      */
     public function testRenderHandlesExceptions()
     {
@@ -116,7 +116,10 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::getNotFoundTemplate, ::getErrorTemplate, ::setNotFoundTemplate, ::setErrorTemplate
+     * @covers ::getNotFoundTemplate
+     * @covers ::getErrorTemplate
+     * @covers ::setNotFoundTemplate
+     * @covers ::setErrorTemplate
      */
     public function testGetTemplates()
     {
