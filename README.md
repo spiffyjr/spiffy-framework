@@ -7,11 +7,11 @@ Build status for components can be found in [the Wiki](https://github.com/spiffy
 
 ## Installation
 
-Spiffy\Framework can be installed using composer which will setup any autoloading for you.
+See the [wiki installation documentation](https://github.com/spiffyjr/spiffy-framework/wiki/Installation).
 
-`composer require spiffy/spiffy-framework`
+## Components
 
-Additionally, you can download or clone the repository and setup your own autoloading.
+See the [wiki component documentation](https://github.com/spiffyjr/spiffy-framework/wiki/Components).
 
 ## Documentation
 
