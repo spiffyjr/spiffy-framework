@@ -5,6 +5,7 @@ namespace Spiffy\Framework\Test;
 use Spiffy\Framework\Application;
 use Symfony\Component\BrowserKit\Cookie as DomCookie;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -28,6 +29,7 @@ class TestClientTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::filterResponse
+     * @covers ::filterRequest
      * @covers ::doRequest
      */
     public function testRequestWithCookies()
@@ -58,9 +60,10 @@ class TestClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo', $cookie->getName());
         $this->assertSame('bar', $cookie->getValue());
     }
-    
+
     /**
      * @covers ::filterResponse
+     * @covers ::filterRequest
      * @covers ::doRequest
      */
     public function testRequest()

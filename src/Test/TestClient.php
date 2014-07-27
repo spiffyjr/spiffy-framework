@@ -32,42 +32,6 @@ class TestClient extends Client
     }
 
     /**
-     * @param array $files
-     * @return array
-     */
-    protected function filterFiles(array $files)
-    {
-        $filtered = array();
-        foreach ($files as $key => $value) {
-            if (is_array($value)) {
-                $filtered[$key] = $this->filterFiles($value);
-            } elseif ($value instanceof UploadedFile) {
-                if ($value->isValid() && $value->getSize() > UploadedFile::getMaxFilesize()) {
-                    $filtered[$key] = new UploadedFile(
-                        '',
-                        $value->getClientOriginalName(),
-                        $value->getClientMimeType(),
-                        0,
-                        UPLOAD_ERR_INI_SIZE,
-                        true
-                    );
-                } else {
-                    $filtered[$key] = new UploadedFile(
-                        $value->getPathname(),
-                        $value->getClientOriginalName(),
-                        $value->getClientMimeType(),
-                        $value->getClientSize(),
-                        $value->getError(),
-                        true
-                    );
-                }
-            }
-        }
-
-        return $filtered;
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function filterRequest(DomRequest $request)
@@ -81,10 +45,6 @@ class TestClient extends Client
             $request->getServer(),
             $request->getContent()
         );
-
-        foreach ($this->filterFiles($httpRequest->files->all()) as $key => $value) {
-            $httpRequest->files->set($key, $value);
-        }
 
         return $httpRequest;
     }
