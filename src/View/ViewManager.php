@@ -78,10 +78,10 @@ final class ViewManager implements Plugin
                 continue;
             }
 
-            try {
-                $result = $strategy->render($e->getModel());
-            } catch (\Exception $ex) {
-                $this->renderException($ex, $e);
+            $result = $this->renderWithStrategy($strategy, $e);
+            
+            // Exception was thrown - break loop and show exception using fallback adapter.
+            if (false === $result) {
                 break;
             }
 
@@ -91,9 +91,14 @@ final class ViewManager implements Plugin
         }
 
         if (null === $result) {
-            $result = $this->fallbackStrategy->render($e->getModel());
+            $result = $this->renderWithStrategy($this->fallbackStrategy, $e);
+            
+            // Exception was thrown - retry once using fallback strategy.
+            if (false === $result) {
+                $result = $this->renderWithStrategy($this->fallbackStrategy, $e);
+            }
         }
-
+        
         $e->setRenderResult($result);
     }
 
@@ -146,6 +151,21 @@ final class ViewManager implements Plugin
     }
 
     /**
+     * @param ViewStrategy $strategy
+     * @param ApplicationEvent $e
+     * @return bool|string
+     */
+    private function renderWithStrategy(ViewStrategy $strategy, ApplicationEvent $e)
+    {
+        try {
+            return $strategy->render($e->getModel());
+        } catch (\Exception $ex) {
+            $this->renderException($ex, $e);
+        }
+        return false;
+    }
+
+    /**
      * @param \Exception $ex
      * @param ApplicationEvent $e
      */
@@ -155,7 +175,5 @@ final class ViewManager implements Plugin
         $e->setType(Application::EVENT_RENDER_ERROR);
         $e->set('exception', $ex);
         $e->getApplication()->events()->fire($e);
-
-        $e->getModel()->setTemplate($this->errorTemplate);
     }
 }

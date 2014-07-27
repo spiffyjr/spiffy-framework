@@ -62,7 +62,6 @@ $config = [
              * Injector.
              */
             'strategies' => [
-                'spiffy.view.twig.twig-strategy',
                 'spiffy.framework.view.json-strategy',
             ],
 

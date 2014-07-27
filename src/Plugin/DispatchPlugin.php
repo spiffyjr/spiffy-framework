@@ -51,7 +51,7 @@ final class DispatchPlugin implements Plugin
         /** @var \Spiffy\Dispatch\Dispatcher $d */
         $d = $i->nvoke('Dispatcher');
 
-        $dispatchable = $d->has($action) || (is_string($action) && (!class_exists($action) && !$i->has($action)));
+        $dispatchable = $d->has($action) || (is_string($action) && (class_exists($action) || $i->has($action)));
         if (!$dispatchable) {
             $e->setError(Application::ERROR_DISPATCH_INVALID);
             $e->setType(Application::EVENT_DISPATCH_ERROR);
@@ -143,8 +143,9 @@ final class DispatchPlugin implements Plugin
             return;
         }
 
-        $i = $e->getApplication()->getInjector();
-        $action = new DispatchInvalidAction($i->nvoke('ViewManager'), $i->nvoke('Request'));
+        $app = $e->getApplication();
+        $i = $app->getInjector();
+        $action = new DispatchInvalidAction($i->nvoke('ViewManager'), $app->getRequest());
 
         $response = $e->getResponse();
         $response->setStatusCode(404);

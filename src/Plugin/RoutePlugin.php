@@ -104,8 +104,9 @@ final class RoutePlugin implements Plugin
             return null;
         }
 
-        $i = $e->getApplication()->getInjector();
-        $action = new InvalidRouteAction($i->nvoke('ViewManager'), $i->nvoke('Request'));
+        $app = $e->getApplication();
+        $i = $app->getInjector();
+        $action = new InvalidRouteAction($i->nvoke('ViewManager'), $app->getRequest());
 
         $response = $e->getResponse();
         $response->setStatusCode(404);

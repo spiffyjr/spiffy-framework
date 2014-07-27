@@ -2,7 +2,6 @@
 
 namespace Spiffy\Framework;
 use Spiffy\Dispatch\Dispatcher;
-use Spiffy\Framework\View\ViewManager;
 use Spiffy\Package\PackageManager;
 use Spiffy\Route\Router;
 use Spiffy\View\VardumpStrategy;
@@ -117,7 +116,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         });
 
         $a->bootstrap();
-        $this->assertSame($a->getInjector()->nvoke('Request'), $a->getEvent()->getRequest());
         $this->assertTrue($fired);
     }
     

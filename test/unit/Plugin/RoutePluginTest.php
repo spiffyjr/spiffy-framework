@@ -174,7 +174,6 @@ class RoutePluginTest extends AbstractPluginTest
         parent::setUp();
         $i = $this->app->getInjector();
         $i->nject('Dispatcher', new Dispatcher());
-        $i->nject('Request', new Request());
         $i->nject('Router', new Router());
         $i->nject('ViewManager', new ViewManager(new VardumpStrategy()));
     }

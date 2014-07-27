@@ -8,7 +8,6 @@ use Spiffy\View\ViewModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * @coversDefaultClass \Spiffy\Framework\ApplicationEvent
  */
@@ -61,6 +60,18 @@ class ApplicationEventTest extends \PHPUnit_Framework_TestCase
     public function testGetResponseIsLazy()
     {
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $this->e->getResponse());
+    }
+
+    /**
+     * @covers ::getRequest
+     */
+    public function testGetRequestLazyLoadsWithGlobals()
+    {
+        $event = new ApplicationEvent(new Application());
+        $request = $event->getRequest();
+
+        $this->assertEquals(Request::createFromGlobals(), $request);
+        $this->assertSame($request, $event->getRequest());
     }
     
     public function provider()

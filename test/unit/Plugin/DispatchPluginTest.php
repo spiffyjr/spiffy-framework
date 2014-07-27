@@ -104,8 +104,8 @@ class DispatchPluginTest extends AbstractPluginTest
 
         $i->nject('Dispatcher', $d);
 
-        $match = new RouteMatch(new Route('exception', '/exception'));
-        $match->set('action', 'exception');
+        $match = new RouteMatch(new Route('doesnotexist', '/doesnotexist'));
+        $match->set('action', 'doesnotexist');
 
         $event = $this->event;
         $event->setRouteMatch($match);
@@ -119,7 +119,7 @@ class DispatchPluginTest extends AbstractPluginTest
         $result = new ViewModel([
             'uri' => '/',
             'type' => 'action',
-            'action' => 'exception'
+            'action' => 'doesnotexist'
         ]);
         $result->setTemplate('error/404');
         
@@ -311,7 +311,6 @@ class DispatchPluginTest extends AbstractPluginTest
     {
         parent::setUp();
         $i = $this->app->getInjector();
-        $i->nject('Request', new Request());
         $i->nject('Router', new Router());
         $i->nject('ViewManager', new ViewManager(new VardumpStrategy()));
     }

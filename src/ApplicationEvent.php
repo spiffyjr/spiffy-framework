@@ -132,6 +132,10 @@ final class ApplicationEvent extends Event
      */
     public function getRequest()
     {
+        if ($this->request instanceof Request) {
+            return $this->request;
+        }
+        $this->request = Request::createFromGlobals();
         return $this->request;
     }
 

@@ -13,7 +13,6 @@ use Spiffy\Inject\InjectorUtils;
 use Spiffy\Package\PackageManager;
 use Spiffy\Route\Router;
 use Spiffy\View\ViewStrategy;
-use Symfony\Component\HttpFoundation\Request;
 
 final class BootstrapPlugin implements Plugin
 {
@@ -29,7 +28,6 @@ final class BootstrapPlugin implements Plugin
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'injectPlugins'], 500);
 
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createDispatcher']);
-        $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createRequest']);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createRouter']);
         $events->on(Application::EVENT_BOOTSTRAP, [$this, 'createViewManager']);
 
@@ -181,15 +179,6 @@ final class BootstrapPlugin implements Plugin
 
         $pm->load();
         $i->nject('PackageManager', $pm);
-    }
-
-    /**
-     * @param \Spiffy\Framework\ApplicationEvent $e
-     */
-    public function createRequest(ApplicationEvent $e)
-    {
-        $i = $e->getApplication()->getInjector();
-        $i->nject('Request', Request::createFromGlobals());
     }
 
     /**

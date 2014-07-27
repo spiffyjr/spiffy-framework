@@ -66,7 +66,6 @@ final class Application
      * The following is a list of expected services:
      * - Dispatcher
      * - PackageManager
-     * - Request
      * - Router
      * - ViewManager
      *
@@ -77,9 +76,6 @@ final class Application
         $event = $this->getEvent();
         $event->setType(self::EVENT_BOOTSTRAP);
         $this->events()->fire($event);
-
-        $i = $this->getInjector();
-        $this->getEvent()->setRequest($i->nvoke('Request'));
 
         return $this;
     }

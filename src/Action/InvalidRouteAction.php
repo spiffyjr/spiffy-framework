@@ -24,10 +24,9 @@ class InvalidRouteAction extends AbstractAction
     }
 
     /**
-     * @param array $server
      * @return \Spiffy\View\ViewModel
      */
-    public function __invoke($server)
+    public function __invoke()
     {
         $model = new ViewModel();
         $model->setTemplate($this->vm->getNotFoundTemplate());

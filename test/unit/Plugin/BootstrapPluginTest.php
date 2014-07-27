@@ -26,7 +26,7 @@ class BootstrapPluginTest extends AbstractPluginTest
 
         $p->plug($events);
 
-        $this->assertCount(10, $events->getEvents(Application::EVENT_BOOTSTRAP));
+        $this->assertCount(9, $events->getEvents(Application::EVENT_BOOTSTRAP));
     }
 
     /**
@@ -49,7 +49,7 @@ class BootstrapPluginTest extends AbstractPluginTest
         $p->injectPlugins($this->event);
 
         $events = $this->app->events();
-        $this->assertCount(11, $events->getEvents(Application::EVENT_BOOTSTRAP));
+        $this->assertCount(10, $events->getEvents(Application::EVENT_BOOTSTRAP));
         $this->assertCount(2, $events->getEvents(Application::EVENT_RENDER));
         $this->assertCount(2, $events->getEvents(Application::EVENT_RESPOND));
     }
@@ -161,18 +161,6 @@ class BootstrapPluginTest extends AbstractPluginTest
         $pm = $app->getInjector()->nvoke('PackageManager');
         $this->assertInstanceOf('Spiffy\Package\PackageManager', $pm);
         $this->assertCount(1, $pm->getPackages());
-    }
-
-    /**
-     * @covers ::createRequest
-     */
-    public function testCreateRequest()
-    {
-        $p = $this->p;
-        $p->createRequest($this->event);
-
-        $request = $this->app->getInjector()->nvoke('Request');
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $request);
     }
 
     /**

@@ -10,8 +10,11 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite name="Spiffy\Framework">
-            <directory>.</directory>
+        <testsuite name="Unit">
+            <directory>./unit</directory>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>./functional</directory>
         </testsuite>
     </testsuites>
 </phpunit>
