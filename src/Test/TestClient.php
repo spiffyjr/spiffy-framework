@@ -72,7 +72,15 @@ class TestClient extends Client
      */
     protected function filterRequest(DomRequest $request)
     {
-        $httpRequest = Request::create($request->getUri(), $request->getMethod(), $request->getParameters(), $request->getCookies(), $request->getFiles(), $request->getServer(), $request->getContent());
+        $httpRequest = Request::create(
+            $request->getUri(),
+            $request->getMethod(),
+            $request->getParameters(),
+            $request->getCookies(),
+            $request->getFiles(),
+            $request->getServer(),
+            $request->getContent()
+        );
 
         foreach ($this->filterFiles($httpRequest->files->all()) as $key => $value) {
             $httpRequest->files->set($key, $value);
@@ -89,8 +97,17 @@ class TestClient extends Client
         $headers = $response->headers->all();
         if ($response->headers->getCookies()) {
             $cookies = array();
+            /** @var \Symfony\Component\HttpFoundation\Cookie $cookie */
             foreach ($response->headers->getCookies() as $cookie) {
-                $cookies[] = new DomCookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+                $cookies[] = new DomCookie(
+                    $cookie->getName(),
+                    $cookie->getValue(),
+                    $cookie->getExpiresTime(),
+                    $cookie->getPath(),
+                    $cookie->getDomain(),
+                    $cookie->isSecure(),
+                    $cookie->isHttpOnly()
+                );
             }
             $headers['Set-Cookie'] = $cookies;
         }
