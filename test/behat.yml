@@ -1,0 +1,7 @@
+default:
+    suites:
+        default:
+            paths:
+                bootstrap: 'feature/bootstrap'
+                features: 'feature'
+            contexts: [Spiffy\Framework\Test\FeatureContext]
