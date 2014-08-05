@@ -171,7 +171,7 @@ final class Application
                 }
 
                 $plugin = InjectorUtils::get($this->injector, $plugin);
-            } else if (is_object($plugin)) {
+            } elseif (is_object($plugin)) {
                 $pluginName = get_class($plugin);
             } else {
                 $pluginName = $index;
