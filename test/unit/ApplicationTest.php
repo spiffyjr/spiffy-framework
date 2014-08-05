@@ -2,6 +2,7 @@
 
 namespace Spiffy\Framework;
 use Spiffy\Dispatch\Dispatcher;
+use Spiffy\Framework\Plugin\BootstrapPlugin;
 use Spiffy\Package\PackageManager;
 use Spiffy\Route\Router;
 use Spiffy\View\VardumpStrategy;
@@ -82,6 +83,84 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $a->events();
         
         $this->assertCount(8, $a->events()->getEvents());
+    }
+
+    /**
+     * @covers ::events
+     * @covers ::attachDefaultPlugins
+     */
+    public function testAttachingDefaultPluginsWithDebug()
+    {
+        $a = new Application([
+            'environment' => [
+                'debug' => false,
+            ],
+            'plugins' => [
+                'bootstrap' => null,
+                'dispatch' => null,
+                'render' => null,
+                'respond' => null,
+                'route' => null,
+                'foobar' => '?foobar'
+            ]
+        ]);
+
+        $this->assertCount(0, $a->events()->getEvents());
+
+        $a = new Application([
+            'environment' => [
+                'debug' => true,
+            ],
+            'plugins' => [
+                'bootstrap' => '?Spiffy\Framework\Plugin\BootstrapPlugin',
+                'dispatch' => null,
+                'render' => null,
+                'respond' => null,
+                'route' => null,
+            ]
+        ]);
+
+        $this->assertCount(1, $a->events()->getEvents());
+    }
+
+    /**
+     * @covers ::events
+     * @covers ::attachDefaultPlugins
+     */
+    public function testAttachingPluginsFromObject()
+    {
+        $a = new Application([
+            'plugins' => [
+                'bootstrap' => new BootstrapPlugin(),
+                'dispatch' => null,
+                'render' => null,
+                'respond' => null,
+                'route' => null,
+            ]
+        ]);
+
+        $this->assertCount(1, $a->events()->getEvents());
+    }
+
+    /**
+     * @covers ::events
+     * @covers ::attachDefaultPlugins
+     * @expectedException \Spiffy\Framework\Exception\InvalidPluginException
+     * @expectedExceptionMessage failed to load plugin "bootstrap": "boolean" was invalid - verify plugin and injector configuration
+     */
+    public function testAttachingPluginsThrowsExceptionIfInvalid()
+    {
+        $a = new Application([
+                'plugins' => [
+                    'bootstrap' => false,
+                    'dispatch' => null,
+                    'render' => null,
+                    'respond' => null,
+                    'route' => null,
+                ]
+            ]);
+
+        $this->assertCount(1, $a->events()->getEvents());
     }
 
     /**

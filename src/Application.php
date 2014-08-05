@@ -4,6 +4,7 @@ namespace Spiffy\Framework;
 
 use Spiffy\Event\EventsAwareTrait;
 use Spiffy\Event\Manager;
+use Spiffy\Event\Plugin;
 use Spiffy\Inject\Injector;
 use Spiffy\Inject\InjectorUtils;
 
@@ -158,8 +159,37 @@ final class Application
      */
     protected function attachDefaultPlugins(Manager $events)
     {
-        foreach ($this->config->getPlugins() as $plugin) {
-            $events->plug(InjectorUtils::get($this->injector, $plugin));
+        foreach ($this->config->getPlugins() as $index => $plugin) {
+            if (is_string($plugin)) {
+                $pluginName = $plugin;
+
+                if ($plugin[0] == '?') {
+                    if (!$this->isDebug()) {
+                        continue;
+                    }
+                    $plugin = substr($plugin, 1);
+                }
+
+                $plugin = InjectorUtils::get($this->injector, $plugin);
+            } else if (is_object($plugin)) {
+                $pluginName = get_class($plugin);
+            } else {
+                $pluginName = $index;
+            }
+
+            if (null === $plugin) {
+                continue;
+            }
+
+            if (!$plugin instanceof Plugin) {
+                throw new Exception\InvalidPluginException(sprintf(
+                    'failed to load plugin "%s": "%s" was invalid - verify plugin and injector configuration',
+                    $pluginName,
+                    gettype($plugin)
+                ));
+            }
+
+            $events->plug($plugin);
         }
     }
 }

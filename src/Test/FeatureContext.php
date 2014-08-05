@@ -4,9 +4,6 @@ namespace Spiffy\Framework\Test;
 
 use Behat\Behat\Context\Context;
 
-/**
- * Behat context class.
- */
 class FeatureContext implements Context
 {
     use FunctionalTestTrait;
@@ -15,16 +12,6 @@ class FeatureContext implements Context
     private $client;
     /** @var \Symfony\Component\DomCrawler\Crawler */
     private $crawler;
-
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context object.
-     * You can also pass arbitrary arguments to the context constructor through behat.yml.
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * @When /^a request to "([^"]*)" is made$/
@@ -65,5 +52,22 @@ class FeatureContext implements Context
     public function iShouldGetAResponseCode($statusCode)
     {
         \PHPUnit_Framework_Assert::assertEquals($statusCode, $this->client->getResponse()->getStatusCode());
+        return $this->client->getResponse()->getStatusCode() == $statusCode;
+    }
+
+    /**
+     * @return TestClient
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @return \Symfony\Component\DomCrawler\Crawler
+     */
+    public function getCrawler()
+    {
+        return $this->crawler;
     }
 }
