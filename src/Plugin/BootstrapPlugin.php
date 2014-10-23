@@ -161,7 +161,6 @@ final class BootstrapPlugin implements Plugin
             $appConfig->getPackageConfigCache()
         );
         
-        // todo: interface for package manager plugins?
         foreach ($appConfig->getPackageManagerPlugins() as $plugin) {
             $pm->events()->plug(new $plugin());
         }
