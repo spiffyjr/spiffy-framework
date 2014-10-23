@@ -6,7 +6,6 @@ use Spiffy\Event\Manager;
 use Spiffy\Event\Plugin;
 use Spiffy\Framework\Application;
 use Spiffy\Framework\ApplicationEvent;
-use Symfony\Component\HttpFoundation\Response;
 
 final class RespondPlugin implements Plugin
 {
